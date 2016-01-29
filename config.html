@@ -1,9 +1,17 @@
 <h1>Sup!</h1>
 
-<form method="get" action="pebblejs://close" >
+<form method="get" action="pebblejs://close" id="form" >
   <label>
     Kodi IP<br />
     <input type="tel" name="ip" placeholder="192.168.1.100" />
   </label>
   <input type="submit" />
 </form>
+
+<script type="text/javascript">
+  document.getElementById('form').addEventListener('submit', function(event) {
+    event.stopPropagation();
+    var options = { color: 'white', border: true };
+    document.location = 'pebblejs://close#' + encodeURIComponent(JSON.stringify(options));
+  });
+</script>
