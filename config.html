@@ -10,8 +10,13 @@
 
 <script type="text/javascript">
   document.getElementById('form').addEventListener('submit', function(event) {
+    console.log('submit')
     event.stopPropagation();
     var options = { color: 'white', border: true };
     document.location = 'pebblejs://close#' + encodeURIComponent(JSON.stringify(options));
   });
+  
+  setTimeout(function() {
+    console.log(localStorage.get(color));
+  }, 2000)
 </script>
