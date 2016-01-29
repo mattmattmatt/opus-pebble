@@ -1,15 +1,17 @@
 var V = require('vector2');
 var UI = require('ui');
 
+module.exports.actionDef = {
+    up: 'images/previous.png',
+    select: 'images/play.png',
+    down: 'images/next.png',
+    backgroundColor: '#ffffff'
+};
+
 module.exports.main = function() {
     var screen = new UI.Window({
         fullscreen: true,
-        action: {
-            up: 'images/previous.png',
-            select: 'images/pause.png',
-            down: 'images/next.png',
-            backgroundColor: '#ffffff'
-        }
+        action: module.exports.actionDef
     });
 
     var bg = new UI.Rect({
@@ -24,7 +26,7 @@ module.exports.main = function() {
 };
 
 module.exports.title = function(text) {
-   return new UI.Text({
+    return new UI.Text({
         position: new V(10, 10),
         size: new V(104, 48),
         font: 'gothic-28',
