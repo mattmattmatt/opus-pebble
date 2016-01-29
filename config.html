@@ -6,6 +6,7 @@
     <input type="tel" name="ip" placeholder="192.168.1.100" />
   </label>
   <input type="submit" />
+  <span id="log"></span>
 </form>
 
 <script type="text/javascript">
@@ -18,5 +19,6 @@
   
   setTimeout(function() {
     console.log(localStorage.getItem('color'));
+    document.getElementById('log').innerHTML = Math.random() + ' ' + localStorage.getItem('color');
   }, 2000)
 </script>
