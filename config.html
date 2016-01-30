@@ -38,7 +38,7 @@
 
         setTimeout(function() {
             console.log(localStorage.getItem('color'));
-            document.getElementById('log').innerHTML = Math.random() + ' ' + localStorage.getItem('color');
+            document.getElementById('log').innerHTML = Math.random() + ' ' + decodeURIComponent(window.location.hash.substr(1));
         }, 2000)
 
     </script>
