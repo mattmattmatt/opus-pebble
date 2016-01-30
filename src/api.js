@@ -1,9 +1,14 @@
 var ajax = require('ajax');
-
-var kodiIp = '192.168.1.140';
+var Settings = require('settings');
 
 module.exports.send = function(method, params, callback) {
+    var kodiIp = Settings.option('ip');
     callback = callback || function() {};
+
+    if (!kodiIp) {
+        return false;
+    }
+    
     var data = {
         "jsonrpc": "2.0",
         "method": method,

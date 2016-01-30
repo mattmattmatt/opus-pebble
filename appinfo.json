@@ -1,16 +1,15 @@
 {
     "appKeys": {},
     "capabilities": [
-        ""
+        "configurable"
     ],
-    "companyName": "pebble@prettygoodguy.com",
-    "longName": "Kodi",
+    "companyName": "Pretty Good Apps",
+    "longName": "Opus - A Kodi Remote For Pebble",
     "projectType": "pebblejs",
     "resources": {
         "media": [
             {
                 "file": "images/menu_icon.png",
-                "menuIcon": true,
                 "name": "IMAGE_MENU_ICON",
                 "type": "bitmap"
             },
@@ -28,6 +27,17 @@
                 "file": "fonts/UbuntuMono-Regular.ttf",
                 "name": "MONO_FONT_14",
                 "type": "font"
+            },
+            {
+                "file": "images/kodi3.png",
+                "menuIcon": true,
+                "name": "IMAGES_KODI3_PNG",
+                "type": "bitmap"
+            },
+            {
+                "file": "images/kodi2.png",
+                "name": "IMAGES_KODI2_PNG",
+                "type": "bitmap"
             },
             {
                 "file": "images/next.png",
@@ -52,7 +62,7 @@
         ]
     },
     "sdkVersion": "3",
-    "shortName": "Kodi",
+    "shortName": "Opus",
     "targetPlatforms": [
         "aplite",
         "basalt"

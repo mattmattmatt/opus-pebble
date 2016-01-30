@@ -5,6 +5,7 @@
  */
 
 var Vibe = require('ui/vibe');
+var Settings = require('settings');
 
 var api = require('./api');
 var ui = require('./screen-main');
@@ -66,7 +67,7 @@ function getPlayerState() {
                     main.action(actionDef);
                 }
             });
-            
+
             api.send('Player.GetItem', {"properties": ["title", "album", "artist", "duration"], "playerid": playerid}, function(data) {
                 var playingItem = data.result.item;
                 titleUi.text(playingItem.title);
@@ -82,9 +83,11 @@ function getPlayerState() {
     titleUi = ui.title('Kodi');
     main.add(titleUi);
 
-    descriptionUi = ui.description('Rock\'n\'roll, baby.');
+    descriptionUi = ui.description('Rock\'n\'roll, baby.\n' + (Settings.option('ip') || 'No Kodi IP defined.'));
     main.add(descriptionUi);
 
+    require('./settings-loader').init();
+    
     getPlayerState();
-    setInterval(getPlayerState, 10000);
+//    setInterval(getPlayerState, 10000);
 })();
