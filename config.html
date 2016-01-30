@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style type="text/css">
         .demo-card-wide {
-            margin: 20px auto;
+            margin: 20px auto 40px;
         }
 
         #feedback {
@@ -16,6 +16,14 @@
             float: right;
         }
 
+        .mdl-tooltip {
+            z-index: 1000;
+        }
+
+        .has-tt {
+            z-index: 1000;
+            position: relative;
+        }
     </style>
 </head>
 
@@ -26,14 +34,33 @@
         </div>
         <form id="form">
             <div class="mdl-card__supporting-text">
-                Configure Opus here.<br />
-                Then confirm your changes with the "Save" button.
+                Configure Opus here.
+                <br /> Then confirm your changes with the "Save" button.
             </div>
             <div class="mdl-card__supporting-text">
                 <fieldset class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                     <input class="mdl-textfield__input" type="tel" id="ip" name="ip" required="required">
                     <label class="mdl-textfield__label" for="ip">Kodi IP Address</label>
                     <span class="mdl-textfield__error">Enter Kodi's local IP address</span>
+                </fieldset>
+            </div>
+            <div class="mdl-card__supporting-text">
+                <fieldset id="tt1" class="has-tt">
+                    <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="switch-update-ui">
+                        <input type="checkbox" id="switch-update-ui" class="mdl-switch__input" checked>
+                        <span class="mdl-switch__label">Regularly update UI</span>
+                        <div for="tt1" class="mdl-tooltip mdl-tooltip--large">
+                            Query Kodi a few times per minute for its current state.
+                        </div>
+                    </label>
+                </fieldset>
+            </div>
+            <div class="mdl-card__supporting-text">
+                <fieldset>
+                    <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="switch-vibe-long-press">
+                        <input type="checkbox" id="switch-vibe-long-press" class="mdl-switch__input" checked>
+                        <span class="mdl-switch__label">Vibrate on long press</span>
+                    </label>
                 </fieldset>
             </div>
             <div class="mdl-card__actions mdl-card--border">
@@ -48,36 +75,41 @@
 
 
     <script type="text/javascript">
-        (function() {
+        (function () {
             var config;
 
-            document.getElementById('form').addEventListener('submit', function(event) {
+            document.getElementById('form').addEventListener('submit', function (event) {
                 event.preventDefault();
                 event.stopPropagation();
 
                 var settings = {
-                    ip: document.getElementById('ip').value.trim()
+                    ip: document.getElementById('ip').value.trim(),
+                    vibeOnLongPress: document.getElementById('switch-vibe-long-press').checked,
+                    updateUi: document.getElementById('switch-update-ui').checked
                 };
 
-                log('Saved.<br />' + JSON.stringify(settings));
+                log('Saved.<br />' + JSON.stringify(settings) + '<br/>' + encodeURIComponent(JSON.stringify(settings)));
 
                 document.location = 'pebblejs://close#' + encodeURIComponent(JSON.stringify(settings));
             });
 
             function log(text) {
-                document.getElementById('log').innerHTML = text;
+                setTimeout(function() {
+                    document.getElementById('log').innerHTML = text;
+                }, 1000);
             }
 
             (function init() {
                 try {
                     config = JSON.parse(decodeURIComponent(window.location.hash.substr(1)));
                     document.getElementById('ip').value = config.ip || '';
+                    document.getElementById('switch-vibe-long-press').checked = config.vibeOnLongPress;
+                    document.getElementById('switch-update-ui').checked = config.updateUi;
                 } catch (e) {
                     log('Could not parse current configuration.')
                 }
             })();
         })();
-
     </script>
 
 </body>
