@@ -17,7 +17,7 @@ module.exports.main = function() {
     var bg = new UI.Rect({
         position: new V(0, 0),
         size: new V(144, 168),
-        backgroundColor: '#0099cc'
+        backgroundColor: '#00aaff'
     });
 
     screen.add(bg);
@@ -27,8 +27,8 @@ module.exports.main = function() {
 
 module.exports.title = function(text) {
     return new UI.Text({
-        position: new V(10, 10),
-        size: new V(104, 48),
+        position: new V(8, 8),
+        size: new V(100, 83),
         font: 'gothic-28',
         color: '#ffffff',
         text: text || ''
@@ -37,8 +37,8 @@ module.exports.title = function(text) {
 
 module.exports.description = function(text) {
     return new UI.Text({
-        position: new V(10, 104),
-        size: new V(104, 56),
+        position: new V(8, 102),
+        size: new V(100, 53),
         font: 'gothic-18',
         color: '#ffffff',
         text: text || ''

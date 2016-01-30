@@ -4,7 +4,7 @@
         "configurable"
     ],
     "companyName": "Pretty Good Apps",
-    "longName": "Opus - A Kodi Remote For Pebble",
+    "longName": "Opus - A Kodi Remote",
     "projectType": "pebblejs",
     "resources": {
         "media": [
@@ -32,11 +32,6 @@
                 "file": "images/kodi3.png",
                 "menuIcon": true,
                 "name": "IMAGES_KODI3_PNG",
-                "type": "bitmap"
-            },
-            {
-                "file": "images/kodi2.png",
-                "name": "IMAGES_KODI2_PNG",
                 "type": "bitmap"
             },
             {
@@ -69,7 +64,7 @@
     ],
     "uuid": "63309aa8-882a-473f-9b69-e845c7e04d05",
     "versionCode": 1,
-    "versionLabel": "1.0",
+    "versionLabel": "1.1",
     "watchapp": {
         "hiddenApp": false,
         "watchface": false

@@ -1,9 +1,3 @@
-/**
- * Welcome to Pebble.js!
- *
- * This is where you write your app.
- */
-
 var Vibe = require('ui/vibe');
 var Settings = require('settings');
 
@@ -15,6 +9,7 @@ var volume = 0;
 var playerid = 0;
 var isPlaying = false;
 
+var updateInterval;
 var titleUi;
 var descriptionUi;
 
@@ -23,7 +18,9 @@ main.on('click', 'select', function(e) {
 });
 
 main.on('longClick', 'up', function(e) {
-    Vibe.vibrate('short');
+    if (Settings.option('vibeOnLongPress') !== false) {
+        Vibe.vibrate('short');        
+    }
     api.send('Player.GoTo', [playerid, 'previous'], getPlayerState);
 });
 
@@ -35,7 +32,9 @@ main.on('click', 'up', function(e) {
 });
 
 main.on('longClick', 'down', function(e) {
-    Vibe.vibrate('short');
+    if (Settings.option('vibeOnLongPress') !== false) {
+        Vibe.vibrate('short');        
+    }
     api.send('Player.GoTo', [playerid, 'next'], getPlayerState);
 });
 
@@ -70,24 +69,48 @@ function getPlayerState() {
 
             api.send('Player.GetItem', {"properties": ["title", "album", "artist", "duration"], "playerid": playerid}, function(data) {
                 var playingItem = data.result.item;
-                titleUi.text(playingItem.title);
-                descriptionUi.text(playingItem.artist[0].toUpperCase() + '\n' + playingItem.album);
+                updateText(playingItem.title, playingItem.artist[0].toUpperCase() + '\n' + playingItem.album);
             });
         }
     });    
 }
 
+function updateText(title, desc) {
+    titleUi.text(title);
+    descriptionUi.text(desc);
+}
+
+function setDefaultText() {
+    updateText('Opus', (Settings.option('ip') || 'No Kodi IP defined. Open phone settings.'));
+}
+
+function checkUiUpdateability() {
+    clearInterval(updateInterval);
+    if (Settings.option('updateUi') !== false) {
+        updateInterval = setInterval(function() {
+            if (Settings.option('updateUi') === false) {
+                clearInterval(updateInterval);
+            } else {
+                getPlayerState();
+            }
+        }, 10000);
+    }  
+}
+
+function onSettingsUpdated() {
+    checkUiUpdateability();
+}
+
 (function init() {
     main.show();
 
-    titleUi = ui.title('Kodi');
-    main.add(titleUi);
+    main.add(titleUi = ui.title());
+    main.add(descriptionUi = ui.description());
 
-    descriptionUi = ui.description('Rock\'n\'roll, baby.\n' + (Settings.option('ip') || 'No Kodi IP defined.'));
-    main.add(descriptionUi);
+    setDefaultText();
 
-    require('./settings-loader').init();
-    
+    require('./settings-loader').init(onSettingsUpdated);
+
     getPlayerState();
-//    setInterval(getPlayerState, 10000);
+    checkUiUpdateability();
 })();

@@ -15,7 +15,7 @@ module.exports.send = function(method, params, callback) {
         "params": params,
         "id": Math.ceil(Math.random() * 10000)
     };
-    console.log('Sending: ' + JSON.stringify(data, null, ' '));
+    console.log('Sending: ' + JSON.stringify(data, null, ''));
     ajax(
         {
             url: 'http://' + kodiIp + '/jsonrpc?Base',
@@ -28,7 +28,7 @@ module.exports.send = function(method, params, callback) {
             callback(data);
         },
         function(error, status, request) {
-            console.log('error');
+            console.log('ajax error: ' + method);
             console.log(status + ': ' + JSON.stringify(error));
         }
     );
