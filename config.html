@@ -1,20 +1,42 @@
-<h1>Sup!</h1>
+<!DOCTYPE HTML>
+<html>
 
-<form method="post" action="pebblejs://close" id="form">
-  <label>
-    Kodi IP<br />
-    <input type="tel" name="ip" placeholder="192.168.1.100" />
-  </label>
-  <input type="submit" />
-  <span id="log"></span>
-</form>
+<head>
+    <link rel="stylesheet" href="https://storage.googleapis.com/code.getmdl.io/1.0.6/material.indigo-pink.min.css">
+    <script src="https://storage.googleapis.com/code.getmdl.io/1.0.6/material.min.js"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
 
-<script type="text/javascript">
-  document.getElementById('form').addEventListener('submit', function(event) {
-  });
-  
-  setTimeout(function() {
-    console.log(localStorage.getItem('color'));
-    document.getElementById('log').innerHTML = Math.random() + ' ' + localStorage.getItem('color');
-  }, 2000)
-</script>
+<body>
+    <h1>Sup!</h1>
+
+    <form id="form">
+        <fieldset class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+            <input class="mdl-textfield__input" type="tel" id="ip" name="ip">
+            <label class="mdl-textfield__label" for="ip">Kodi IP Address</label>
+        </fieldset>
+
+        <fieldset>
+            <input type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" />
+        </fieldset>
+    </form>
+
+    <script type="text/javascript">
+        document.getElementById('form').addEventListener('submit', function(event) {
+            var settings = {
+                ip: document.getElementById('ip').value
+            };
+            document.location = 'pebblejs://close#' + encodeURIComponent(JSON.stringify(settings));
+        });
+
+        setTimeout(function() {
+            console.log(localStorage.getItem('color'));
+            document.getElementById('log').innerHTML = Math.random() + ' ' + localStorage.getItem('color');
+        }, 2000)
+
+    </script>
+
+</body>
+
+</html>
