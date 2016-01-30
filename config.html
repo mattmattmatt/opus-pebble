@@ -2,44 +2,81 @@
 <html>
 
 <head>
-    <link rel="stylesheet" href="https://storage.googleapis.com/code.getmdl.io/1.0.6/material.indigo-pink.min.css">
+    <link rel="stylesheet" href="https://storage.googleapis.com/code.getmdl.io/1.0.6/material.blue-red.min.css" />
     <script src="https://storage.googleapis.com/code.getmdl.io/1.0.6/material.min.js"></script>
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style type="text/css">
+        .demo-card-wide {
+            margin: 20px auto;
+        }
+
+        #feedback {
+            text-align: right;
+            float: right;
+        }
+
+    </style>
 </head>
 
 <body>
-    <h1>Sup!</h1>
+    <div class="demo-card-wide mdl-card mdl-shadow--2dp">
+        <div class="mdl-card__title">
+            <h2 class="mdl-card__title-text">Opus Settings for Kodi</h2>
+        </div>
+        <form id="form">
+            <div class="mdl-card__supporting-text">
+                Configure Opus here.<br />
+                Then confirm your changes with the "Save" button.
+            </div>
+            <div class="mdl-card__supporting-text">
+                <fieldset class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input class="mdl-textfield__input" type="tel" id="ip" name="ip" required="required">
+                    <label class="mdl-textfield__label" for="ip">Kodi IP Address</label>
+                    <span class="mdl-textfield__error">Enter Kodi's local IP address</span>
+                </fieldset>
+            </div>
+            <div class="mdl-card__actions mdl-card--border">
+                <button type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
+                    Save
+                </button>
+                <p id="feedback"></p>
+            </div>
+        </form>
+    </div>
+    <span id="log"></span>
 
-    <form id="form">
-        <fieldset class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-            <input class="mdl-textfield__input" type="tel" id="ip" name="ip">
-            <label class="mdl-textfield__label" for="ip">Kodi IP Address</label>
-        </fieldset>
-
-        <fieldset>
-            <input type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" />
-        </fieldset>
-        <fieldset>
-            <span id="log">Log</span>
-        </fieldset>
-    </form>
 
     <script type="text/javascript">
-        document.getElementById('form').addEventListener('submit', function(event) {
-            event.preventDefault();
-            event.stopPropagation();
-            
-            var settings = {
-                ip: document.getElementById('ip').value
-            };
-            document.location = 'pebblejs://close#' + encodeURIComponent(JSON.stringify(settings));
-        });
+        (function() {
+            var config;
 
-        setTimeout(function() {
-            console.log(localStorage.getItem('color'));
-            document.getElementById('log').innerHTML = Math.random() + ' ' + decodeURIComponent(window.location.hash.substr(1));
-        }, 2000)
+            document.getElementById('form').addEventListener('submit', function(event) {
+                event.preventDefault();
+                event.stopPropagation();
+
+                var settings = {
+                    ip: document.getElementById('ip').value.trim()
+                };
+
+                log('Saved.<br />' + JSON.stringify(settings));
+
+                document.location = 'pebblejs://close#' + encodeURIComponent(JSON.stringify(settings));
+            });
+
+            function log(text) {
+                document.getElementById('log').innerHTML = text;
+            }
+
+            (function init() {
+                try {
+                    config = JSON.parse(decodeURIComponent(window.location.hash.substr(1)));
+                    document.getElementById('ip').value = config.ip || '';
+                } catch (e) {
+                    log('Could not parse current configuration.')
+                }
+            })();
+        })();
 
     </script>
 
