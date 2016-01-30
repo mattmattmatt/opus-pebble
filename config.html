@@ -20,10 +20,16 @@
         <fieldset>
             <input type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" />
         </fieldset>
+        <fieldset>
+            <span id="log">Log</span>
+        </fieldset>
     </form>
 
     <script type="text/javascript">
         document.getElementById('form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            
             var settings = {
                 ip: document.getElementById('ip').value
             };
