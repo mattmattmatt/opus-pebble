@@ -13,6 +13,7 @@ var isPlaying = false;
 var updateInterval;
 var titleUi;
 var descriptionUi;
+var timeUi;
 
 main.on('click', 'select', function(e) {
     api.send('Player.PlayPause', [playerid, 'toggle'], getPlayerState);
@@ -100,6 +101,7 @@ function updateText(title, desc) {
 
 function setDefaultText() {
     updateText('Opus', (Settings.option('ip') || 'No Kodi IP defined. Open phone settings.'));
+//    updateText('I I I I I I I I I I I I I I I I I I I I I I I I I I I I I I I I I I I I I I I I I I I I I I', 'I I I I I I I I I I I I I I I I I I I I I I I I I I I I I I I I I I I I I I I I I I I I I I');
 }
 
 function checkUiUpdateability() {
@@ -116,7 +118,23 @@ function checkUiUpdateability() {
 }
 
 function onSettingsUpdated() {
+    clearUi();
+    addUi();
+    setDefaultText();
+    getPlayerState();
     checkUiUpdateability();
+}
+
+function clearUi() {
+    titleUi.remove();
+    descriptionUi.remove();
+    timeUi.remove();
+}
+
+function addUi() {
+    main.add(titleUi = ui.title());
+    main.add(descriptionUi = ui.description());
+    main.add(timeUi = ui.time());    
 }
 
 (function init() {
@@ -124,8 +142,7 @@ function onSettingsUpdated() {
     
     Settings.option('uid', Pebble.getAccountToken());
 
-    main.add(titleUi = ui.title());
-    main.add(descriptionUi = ui.description());
+    addUi();
 
     setDefaultText();
     

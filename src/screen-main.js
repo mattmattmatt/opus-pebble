@@ -1,5 +1,6 @@
 var V = require('vector2');
 var UI = require('ui');
+var Settings = require('settings');
 
 module.exports.actionDef = {
     up: 'images/previous.png',
@@ -27,7 +28,8 @@ module.exports.main = function() {
 
 module.exports.title = function(text) {
     return new UI.Text({
-        position: new V(8, 8),
+        textAlign: 'left',
+        position: new V(8, 8 + (Settings.option('showClock') === true ? 6 : 0)),
         size: new V(100, 83),
         font: 'gothic-28',
         color: '#ffffff',
@@ -37,10 +39,25 @@ module.exports.title = function(text) {
 
 module.exports.description = function(text) {
     return new UI.Text({
-        position: new V(8, 102),
+        textAlign: 'left',
+        position: new V(8, 104),
         size: new V(100, 53),
         font: 'gothic-18',
         color: '#ffffff',
         text: text || ''
     });
 };
+
+
+module.exports.time = function() {
+    return new UI.TimeText({
+        textAlign: 'center',
+        position: new V(0, 0),
+        size: new V(144, 14),
+        font: 'gothic-14',
+        color: '#ffffff',
+        text: Settings.option('showClock') === true ? '%H:%M' : ''
+    });
+};
+
+
