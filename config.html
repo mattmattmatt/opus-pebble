@@ -106,6 +106,14 @@
                     </label>
                 </fieldset>
             </div>
+            <div class="mdl-card__supporting-text">
+                <fieldset>
+                    <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="switch-show-clock">
+                        <input type="checkbox" id="switch-show-clock" class="mdl-switch__input" checked>
+                        <span class="mdl-switch__label">Show clock line with current time</span>
+                    </label>
+                </fieldset>
+            </div>
             <div class="mdl-card__actions mdl-card--border">
                 <button type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
                     Save
@@ -128,7 +136,8 @@
                 var settings = {
                     ip: document.getElementById('ip').value.trim(),
                     vibeOnLongPress: document.getElementById('switch-vibe-long-press').checked,
-                    updateUi: document.getElementById('switch-update-ui').checked
+                    updateUi: document.getElementById('switch-update-ui').checked,
+                    showClock: document.getElementById('switch-show-clock').checked
                 };
 
                 log('Saved.<br />' + JSON.stringify(settings) + '<br/>' + encodeURIComponent(JSON.stringify(settings)));
@@ -153,9 +162,11 @@
                     document.getElementById('ip').value = config.ip || '';
                     document.getElementById('switch-vibe-long-press').checked = config.vibeOnLongPress;
                     document.getElementById('switch-update-ui').checked = config.updateUi;
+                    document.getElementById('switch-show-clock').checked = config.showClock;
                 } catch (e) {
                     document.getElementById('switch-vibe-long-press').checked = true;
                     document.getElementById('switch-update-ui').checked = true;
+                    document.getElementById('switch-show-clock').checked = false;
 
                     mixpanel.track("Config, Parsing error", {
                         detectedHash: decodeURIComponent(window.location.hash.substr(1))
