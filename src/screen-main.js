@@ -2,9 +2,26 @@ var V = require('vector2');
 var UI = require('ui');
 var Settings = require('settings');
 
+module.exports.DEMO_MODE = false;
+
+var demoProps = {
+    song: 'Open Eye Signal',
+    artist: 'Jon Hopkins',
+    album: 'Immunity',
+    artist: 'Moderat',
+    album: 'Moderat',
+    song: 'A New Error',
+    showClock: true,
+    isPlaying: true
+};
+
+if (module.exports.DEMO_MODE) {
+    Settings.option('showClock', demoProps.showClock);
+}
+
 module.exports.actionDef = {
     up: 'images/previous.png',
-    select: 'images/play.png',
+    select: module.exports.DEMO_MODE && demoProps.isPlaying ? 'images/pause.png' : 'images/play.png',
     down: 'images/next.png',
     backgroundColor: '#ffffff'
 };
@@ -27,6 +44,9 @@ module.exports.main = function() {
 };
 
 module.exports.title = function(text) {
+    if (module.exports.DEMO_MODE) {
+        text = demoProps.song;
+    }
     return new UI.Text({
         textAlign: 'left',
         position: new V(8, 8 + (Settings.option('showClock') === true ? 6 : 0)),
@@ -38,6 +58,9 @@ module.exports.title = function(text) {
 };
 
 module.exports.description = function(text) {
+    if (module.exports.DEMO_MODE) {
+        text = demoProps.artist.toUpperCase() + '\n' + demoProps.album;
+    }
     return new UI.Text({
         textAlign: 'left',
         position: new V(8, 104),

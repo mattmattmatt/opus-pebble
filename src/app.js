@@ -17,7 +17,7 @@ var timeUi;
 
 main.on('click', 'select', function(e) {
     api.send('Player.PlayPause', [playerid, 'toggle'], getPlayerState);
-    
+
     mixpanel.track('Button pressed, PlayPause');
 });
 
@@ -27,7 +27,7 @@ main.on('longClick', 'up', function(e) {
         Vibe.vibrate('short');        
     }
     api.send('Player.GoTo', [playerid, 'previous'], getPlayerState);
-    
+
     mixpanel.track('Button pressed, Previous');
 });
 
@@ -36,7 +36,7 @@ main.on('longClick', 'down', function(e) {
         Vibe.vibrate('short');        
     }
     api.send('Player.GoTo', [playerid, 'next'], getPlayerState);
-    
+
     mixpanel.track('Button pressed, Next');
 });
 
@@ -46,7 +46,7 @@ main.on('click', 'up', function(e) {
     api.send('Application.SetVolume', [volume], function(data) {
         volume = data.result;
     });
-    
+
     mixpanel.track('Button pressed, Volume up', {
         volume: volume
     });
@@ -57,7 +57,7 @@ main.on('click', 'down', function(e) {
     api.send('Application.SetVolume', [volume], function(data) {
         volume = data.result;
     });
-    
+
     mixpanel.track('Button pressed, Volume down', {
         volume: volume
     });    
@@ -100,8 +100,10 @@ function updateText(title, desc) {
 }
 
 function setDefaultText() {
-    updateText('Opus', (Settings.option('ip') || 'No Kodi IP defined. Open phone settings.'));
+    if (!ui.DEMO_MODE) {
+        updateText('Opus', (Settings.option('ip') || 'No Kodi IP defined. Open phone settings.'));
 //    updateText('I I I I I I I I I I I I I I I I I I I I I I I I I I I I I I I I I I I I I I I I I I I I I I', 'I I I I I I I I I I I I I I I I I I I I I I I I I I I I I I I I I I I I I I I I I I I I I I');
+    }
 }
 
 function checkUiUpdateability() {
@@ -139,13 +141,13 @@ function addUi() {
 
 (function init() {
     main.show();
-    
+
     Settings.option('uid', Pebble.getAccountToken());
 
     addUi();
 
     setDefaultText();
-    
+
     mixpanel.track('App opened');
 
     require('./settings-loader').init(onSettingsUpdated);
