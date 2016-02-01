@@ -2,6 +2,7 @@ var Vibe = require('ui/vibe');
 var Settings = require('settings');
 
 var api = require('./api');
+var mixpanel = require('./mixpanel');
 var ui = require('./screen-main');
 var main = ui.main();
 
@@ -15,20 +16,18 @@ var descriptionUi;
 
 main.on('click', 'select', function(e) {
     api.send('Player.PlayPause', [playerid, 'toggle'], getPlayerState);
+    
+    mixpanel.track('Button pressed, PlayPause');
 });
+
 
 main.on('longClick', 'up', function(e) {
     if (Settings.option('vibeOnLongPress') !== false) {
         Vibe.vibrate('short');        
     }
     api.send('Player.GoTo', [playerid, 'previous'], getPlayerState);
-});
-
-main.on('click', 'up', function(e) {
-    volume += 4;
-    api.send('Application.SetVolume', [volume], function(data) {
-        volume = data.result;
-    });
+    
+    mixpanel.track('Button pressed, Previous');
 });
 
 main.on('longClick', 'down', function(e) {
@@ -36,6 +35,20 @@ main.on('longClick', 'down', function(e) {
         Vibe.vibrate('short');        
     }
     api.send('Player.GoTo', [playerid, 'next'], getPlayerState);
+    
+    mixpanel.track('Button pressed, Next');
+});
+
+
+main.on('click', 'up', function(e) {
+    volume += 4;
+    api.send('Application.SetVolume', [volume], function(data) {
+        volume = data.result;
+    });
+    
+    mixpanel.track('Button pressed, Volume up', {
+        volume: volume
+    });
 });
 
 main.on('click', 'down', function(e) {
@@ -43,7 +56,12 @@ main.on('click', 'down', function(e) {
     api.send('Application.SetVolume', [volume], function(data) {
         volume = data.result;
     });
+    
+    mixpanel.track('Button pressed, Volume down', {
+        volume: volume
+    });    
 });
+
 
 function getPlayerState() {
     api.send('Application.GetProperties', [['volume', 'muted']], function(data) {
@@ -103,11 +121,15 @@ function onSettingsUpdated() {
 
 (function init() {
     main.show();
+    
+    Settings.option('uid', Pebble.getAccountToken());
 
     main.add(titleUi = ui.title());
     main.add(descriptionUi = ui.description());
 
     setDefaultText();
+    
+    mixpanel.track('App opened');
 
     require('./settings-loader').init(onSettingsUpdated);
 
