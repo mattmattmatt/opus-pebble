@@ -147,9 +147,9 @@
             }
 
             (function init() {
-                mixpanel.track("Config viewed");
                 try {
                     config = JSON.parse(decodeURIComponent(window.location.hash.substr(1)));
+                    mixpanel.identify(config.uid);
                     document.getElementById('ip').value = config.ip || '';
                     document.getElementById('switch-vibe-long-press').checked = config.vibeOnLongPress;
                     document.getElementById('switch-update-ui').checked = config.updateUi;
@@ -163,6 +163,7 @@
 
                     log('Could not parse current configuration.');
                 }
+                mixpanel.track("Config viewed");
             })();
         })();
     </script>
