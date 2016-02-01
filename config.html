@@ -154,12 +154,18 @@
                     document.getElementById('switch-vibe-long-press').checked = config.vibeOnLongPress;
                     document.getElementById('switch-update-ui').checked = config.updateUi;
                 } catch (e) {
-                    log('Could not parse current configuration.')
+                    document.getElementById('switch-vibe-long-press').checked = true;
+                    document.getElementById('switch-update-ui').checked = true;
+
+                    mixpanel.track("Config, Parsing error", {
+                        detectedHash: decodeURIComponent(window.location.hash.substr(1))
+                    });
+
+                    log('Could not parse current configuration.');
                 }
             })();
         })();
     </script>
-
 </body>
 
 </html>
