@@ -1,6 +1,7 @@
+/* global module */
+
 var V = require('vector2');
 var UI = require('ui');
-var Settings = require('settings');
 
 module.exports.screen = function() {
     var screen = new UI.Window({
@@ -14,9 +15,9 @@ module.exports.screen = function() {
     });
 
     var text = new UI.Text({
-        textAlign: 'left',
-        position: new V(8, 8),
-        size: new V(100, 72),
+        textAlign: 'center',
+        position: new V(10, 32),
+        size: new V(124, 126),
         font: 'gothic-18',
         color: '#ffffff',
         text: 'Opus is not configured yet.\nOpen the settings screen on your phone to enter Kodi\'s IP address.'

@@ -29,17 +29,6 @@
                 "type": "font"
             },
             {
-                "file": "images/kodi3.png",
-                "menuIcon": true,
-                "name": "IMAGES_KODI3_PNG",
-                "type": "bitmap"
-            },
-            {
-                "file": "images/next.png",
-                "name": "IMAGES_NEXT_PNG",
-                "type": "bitmap"
-            },
-            {
                 "file": "images/previous.png",
                 "name": "IMAGES_PREVIOUS_PNG",
                 "type": "bitmap"
@@ -52,6 +41,17 @@
             {
                 "file": "images/pause.png",
                 "name": "IMAGES_PAUSE_PNG",
+                "type": "bitmap"
+            },
+            {
+                "file": "images/next.png",
+                "name": "IMAGES_NEXT_PNG",
+                "type": "bitmap"
+            },
+            {
+                "file": "images/kodi3.png",
+                "menuIcon": true,
+                "name": "IMAGES_KODI3_PNG",
                 "type": "bitmap"
             }
         ]

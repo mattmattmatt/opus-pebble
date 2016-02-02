@@ -1,3 +1,5 @@
+/* global module */
+
 var Vibe = require('ui/vibe');
 var Settings = require('settings');
 
@@ -12,6 +14,7 @@ var isPlaying = false;
 var titleUi;
 var descriptionUi;
 var timeUi;
+var mainScreen;
 
 
 function clearUi() {
@@ -31,7 +34,7 @@ function updateText(title, desc) {
     descriptionUi.text(desc);
 }
 
-module.exports.udpatePlayerState = function() {
+module.exports.updatePlayerState = function() {
     if (!Settings.option('ip')) {
         return;
     }
@@ -67,15 +70,16 @@ module.exports.udpatePlayerState = function() {
 module.exports.reset = function() {
     clearUi();
     addUi();
-    module.exports.udpatePlayerState();
+    module.exports.updatePlayerState();
 };
 
-module.exports.init = function(mainScreen) {
+module.exports.init = function(m) {
+    mainScreen = m;
     addUi();
-    module.exports.udpatePlayerState();
+    module.exports.updatePlayerState();
 
     mainScreen.on('click', 'select', function(e) {
-        api.send('Player.PlayPause', [playerid, 'toggle'], module.exports.udpatePlayerState);
+        api.send('Player.PlayPause', [playerid, 'toggle'], module.exports.updatePlayerState);
 
         mixpanel.track('Button pressed, PlayPause');
     });
@@ -84,7 +88,7 @@ module.exports.init = function(mainScreen) {
         if (Settings.option('vibeOnLongPress') !== false) {
             Vibe.vibrate('short');
         }
-        api.send('Player.GoTo', [playerid, 'previous'], module.exports.udpatePlayerState);
+        api.send('Player.GoTo', [playerid, 'previous'], module.exports.updatePlayerState);
 
         mixpanel.track('Button pressed, Previous');
     });
@@ -93,7 +97,7 @@ module.exports.init = function(mainScreen) {
         if (Settings.option('vibeOnLongPress') !== false) {
             Vibe.vibrate('short');
         }
-        api.send('Player.GoTo', [playerid, 'next'], module.exports.udpatePlayerState);
+        api.send('Player.GoTo', [playerid, 'next'], module.exports.updatePlayerState);
 
         mixpanel.track('Button pressed, Next');
     });

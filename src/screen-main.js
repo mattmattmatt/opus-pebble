@@ -1,3 +1,5 @@
+/* global module */
+
 var V = require('vector2');
 var UI = require('ui');
 var Settings = require('settings');

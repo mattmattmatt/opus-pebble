@@ -1,3 +1,5 @@
+/* global module */
+
 var ajax = require('ajax');
 var Settings = require('settings');
 

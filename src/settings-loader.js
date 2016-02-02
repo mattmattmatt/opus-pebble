@@ -1,3 +1,5 @@
+/* global module */
+
 var Settings = require('settings');
 
 module.exports.init = function(onSettingsUpdated) {
