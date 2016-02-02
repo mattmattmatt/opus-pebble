@@ -16,14 +16,7 @@
             float: right;
         }
 
-        .mdl-tooltip {
-            z-index: 1000;
-        }
 
-        .has-tt {
-            z-index: 1000;
-            position: relative;
-        }
     </style>
     <!-- start Mixpanel -->
     <script type="text/javascript">
@@ -88,14 +81,14 @@
                 </fieldset>
             </div>
             <div class="mdl-card__supporting-text">
-                <fieldset id="tt1" class="has-tt">
+                <fieldset >
                     <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="switch-update-ui">
                         <input type="checkbox" id="switch-update-ui" class="mdl-switch__input" checked>
                         <span class="mdl-switch__label">Regularly update UI</span>
-                        <div for="tt1" class="mdl-tooltip mdl-tooltip--large">
-                            Query Kodi a few times per minute for its current state.
-                        </div>
                     </label>
+                    <span>
+                        Query Kodi a few times per minute for its current state.
+                    </span>
                 </fieldset>
             </div>
             <div class="mdl-card__supporting-text">
@@ -111,6 +104,19 @@
                     <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="switch-show-clock">
                         <input type="checkbox" id="switch-show-clock" class="mdl-switch__input" checked>
                         <span class="mdl-switch__label">Show clock line with current time</span>
+                    </label>
+                </fieldset>
+            </div>
+           <div class="mdl-card__supporting-text">
+                <fieldset>
+                    <span>What to start when nothing is playing:</span>
+                    <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="option-partymode">
+                        <input type="radio" id="option-partymode" class="mdl-radio__button" name="playActionWhenStopped" value="partymode" checked>
+                        <span class="mdl-radio__label">🎉Party mode</span>
+                    </label>
+                    <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="option-play-last">
+                        <input type="radio" id="option-play-last" class="mdl-radio__button" name="playActionWhenStopped" value="playLast">
+                        <span class="mdl-radio__label">Last playing item</span>
                     </label>
                 </fieldset>
             </div>
@@ -137,7 +143,8 @@
                     ip: document.getElementById('ip').value.trim(),
                     vibeOnLongPress: document.getElementById('switch-vibe-long-press').checked,
                     updateUi: document.getElementById('switch-update-ui').checked,
-                    showClock: document.getElementById('switch-show-clock').checked
+                    showClock: document.getElementById('switch-show-clock').checked,
+                    playActionWhenStopped: document.getElementById('option-play-last').checked ? 'playLast' : 'partymode'
                 };
 
                 log('Saved.<br />' + JSON.stringify(settings) + '<br/>' + encodeURIComponent(JSON.stringify(settings)));
@@ -163,10 +170,16 @@
                     document.getElementById('switch-vibe-long-press').checked = config.vibeOnLongPress;
                     document.getElementById('switch-update-ui').checked = config.updateUi;
                     document.getElementById('switch-show-clock').checked = config.showClock;
+                    if (config.playActionWhenStopped === 'playLast') {
+                        document.getElementById('option-play-last').checked = true;
+                    } else {
+                        document.getElementById('option-partymode').checked = true;
+                    }
                 } catch (e) {
                     document.getElementById('switch-vibe-long-press').checked = true;
                     document.getElementById('switch-update-ui').checked = true;
                     document.getElementById('switch-show-clock').checked = false;
+                    document.getElementById('option-partymode').checked = true;
 
                     mixpanel.track("Config, Parsing error", {
                         detectedHash: decodeURIComponent(window.location.hash.substr(1))
