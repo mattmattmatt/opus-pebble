@@ -26,7 +26,7 @@ module.exports.actionDef = {
     backgroundColor: '#ffffff'
 };
 
-module.exports.main = function() {
+module.exports.screen = function() {
     var screen = new UI.Window({
         fullscreen: true,
         action: module.exports.actionDef
