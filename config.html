@@ -58,7 +58,7 @@
                 f.parentNode.insertBefore(a, f)
             }
         })(document, window.mixpanel || []);
-        mixpanel.init("6229cfb42de97ef516b9da89c4f96ac1");
+        mixpanel.init('6229cfb42de97ef516b9da89c4f96ac1');
     </script>
     <!-- end Mixpanel -->
 </head>
@@ -84,10 +84,11 @@
                 <fieldset >
                     <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="switch-update-ui">
                         <input type="checkbox" id="switch-update-ui" class="mdl-switch__input" checked>
-                        <span class="mdl-switch__label">Regularly update UI</span>
+                        <span class="mdl-switch__label">Regularly update display</span>
                     </label>
                     <span>
-                        Query Kodi a few times per minute for its current state.
+                        Query Kodi a few times per minute for its current state.<br />
+                        You can always shake the watch to refresh.
                     </span>
                 </fieldset>
             </div>
@@ -135,7 +136,7 @@
         (function () {
             var config;
 
-            document.getElementById('form').addEventListener('submit', function (event) {
+            document.getElementById('form').addEventListener('submit', function(event) {
                 event.preventDefault();
                 event.stopPropagation();
 
@@ -149,11 +150,20 @@
 
                 log('Saved.<br />' + JSON.stringify(settings) + '<br/>' + encodeURIComponent(JSON.stringify(settings)));
 
-                mixpanel.track("Config saved", settings);
+                var trackableSettings = JSON.parse(JSON.stringify(settings));
+                trackableSettings.kodiIp = settings.id;
+                delete trackableSettings.ip;
+                mixpanel.track("Config saved", trackableSettings);
 
                 setTimeout(function() {
                     document.location = 'pebblejs://close#' + encodeURIComponent(JSON.stringify(settings));
                 }, 300);
+            });
+
+            document.getElementById('ip').addEventListener('change', function(event) {
+                if (location.search.indexOf('testing') > -1) {
+                    sendKodiRequest();
+                }
             });
 
             function log(text) {
@@ -162,11 +172,32 @@
                 }, 1000);
             }
 
+            function sendKodiRequest() {
+                var request = new XMLHttpRequest();
+                var data = {
+                    'jsonrpc': '2.0',
+                    'method': 'JSONRPC.Ping',
+                    'id': Math.ceil(Math.random() * 10000)
+                };
+
+                request.addEventListener('load', function(data) {
+                    log('success' + JSON.stringify(data));
+                });
+                request.addEventListener('error', function(error) {
+                    log('error' + JSON.stringify(error));
+                });
+                request.open('GET', 'http://'+ document.getElementById('ip').value + '/jsonrpc?jsonCallback=bummm&request=' + encodeURIComponent(JSON.stringify(data)));
+                request.setRequestHeader('Content-type', 'application/javascript');
+                request.send();
+            }
+
             (function init() {
                 try {
                     config = JSON.parse(decodeURIComponent(window.location.hash.substr(1)));
                     mixpanel.identify(config.uid);
-                    document.getElementById('ip').value = config.ip || '';
+                    if (config.ip) {
+                        document.getElementById('ip').value = config.ip;
+                    }
                     document.getElementById('switch-vibe-long-press').checked = config.vibeOnLongPress;
                     document.getElementById('switch-update-ui').checked = config.updateUi;
                     document.getElementById('switch-show-clock').checked = config.showClock;
@@ -181,13 +212,13 @@
                     document.getElementById('switch-show-clock').checked = false;
                     document.getElementById('option-partymode').checked = true;
 
-                    mixpanel.track("Config, Parsing error", {
+                    mixpanel.track('Config, Parsing error', {
                         detectedHash: decodeURIComponent(window.location.hash.substr(1))
                     });
 
                     log('Could not parse current configuration.');
                 }
-                mixpanel.track("Config viewed");
+                mixpanel.track('Config viewed');
             })();
         })();
     </script>
