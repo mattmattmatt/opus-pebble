@@ -14,8 +14,12 @@ module.exports.track = function(event, properties) {
         properties: properties
     };
 
-    console.log('Tracking ' + JSON.stringify(data) + '\n' + btoa(JSON.stringify(data)));
+    console.log('Tracking ' + JSON.stringify(data) + ' ' + btoa(JSON.stringify(data)));
 
+    if (require('./screen-main').DEMO_MODE) {
+        return;
+    }
+    
     ajax(
         {
             url: 'https://api.mixpanel.com/track/?ip=1&&data=' + btoa(JSON.stringify(data)),

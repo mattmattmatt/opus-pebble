@@ -3,9 +3,10 @@
 var ajax = require('ajax');
 var Settings = require('settings');
 
-module.exports.send = function(method, params, callback) {
+module.exports.send = function(method, params, callback, errorCallback) {
     var kodiIp = Settings.option('ip');
     callback = callback || function() {};
+    errorCallback = errorCallback || function() {};
 
     if (!kodiIp) {
         return false;
@@ -32,6 +33,7 @@ module.exports.send = function(method, params, callback) {
         function(error, status, request) {
             console.log('ajax error: ' + method);
             console.log(status + ': ' + JSON.stringify(error));
+            errorCallback(error);
         }
     );
 };

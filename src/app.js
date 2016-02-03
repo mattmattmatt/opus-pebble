@@ -24,6 +24,17 @@ function onSettingsUpdated() {
 }
 
 function showMainScreen() {
+    if (require('./screen-main').DEMO_MODE) {
+        if (require('./screen-main').demoProps.showStartup) {
+            startupScreen.show();
+            mainScreen.hide();
+        } else {
+            mainScreen.show();
+            startupScreen.hide();
+        }
+        return;
+    }
+
     if (Settings.option('ip')) {
         mainScreen.show();
         startupScreen.hide();
@@ -33,6 +44,15 @@ function showMainScreen() {
     }
 }
 
+function onNetworkError(error) {
+    clearInterval(updateRef);
+    var errorScreen = require('./screen-error-network').screen(error);
+    errorScreen.show();
+    mixpanel.track('Network error', {
+        kodiIp: Settings.option('ip')
+    });
+} 
+
 (function init() {
     Settings.option('uid', Pebble.getAccountToken());
     mixpanel.track('App opened');
@@ -41,6 +61,6 @@ function showMainScreen() {
 
     checkUiUpdateability();
 
-    mainHandler.init(mainScreen);
+    mainHandler.init(mainScreen, onNetworkError);
     showMainScreen();
 })();

@@ -4,26 +4,33 @@ var V = require('vector2');
 var UI = require('ui');
 var Settings = require('settings');
 
-module.exports.DEMO_MODE = false;
+module.exports.DEMO_MODE = true;
 
-var demoProps = {
+module.exports.demoProps = {
     song: 'Open Eye Signal',
     artist: 'Jon Hopkins',
     album: 'Immunity',
     artist: 'Moderat',
     album: 'Moderat',
     song: 'A New Error',
+    song: 'The Rains of Castamere',
+    album: 'Game of Thrones',
+    artist: '',
+    song: 'Nothing playing',
+    album: 'Press play to start the last active playlist.',
+    album: 'Press play to start the party!',
     showClock: true,
-    isPlaying: true
+    isPlaying: false,
+    showStartup: false,
 };
 
 if (module.exports.DEMO_MODE) {
-    Settings.option('showClock', demoProps.showClock);
+    Settings.option('showClock', module.exports.demoProps.showClock);
 }
 
 module.exports.actionDef = {
     up: 'images/previous.png',
-    select: module.exports.DEMO_MODE && demoProps.isPlaying ? 'images/pause.png' : 'images/play.png',
+    select: module.exports.DEMO_MODE && module.exports.demoProps.isPlaying ? 'images/pause.png' : 'images/play.png',
     down: 'images/next.png',
     backgroundColor: '#ffffff'
 };
@@ -47,7 +54,7 @@ module.exports.screen = function() {
 
 module.exports.title = function(text) {
     if (module.exports.DEMO_MODE) {
-        text = demoProps.song;
+        text = module.exports.demoProps.song;
     }
     return new UI.Text({
         textAlign: 'left',
@@ -61,7 +68,7 @@ module.exports.title = function(text) {
 
 module.exports.description = function(text) {
     if (module.exports.DEMO_MODE) {
-        text = demoProps.artist.toUpperCase() + '\n' + demoProps.album;
+        text = ((module.exports.demoProps.artist && (module.exports.demoProps.artist.toUpperCase() + '\n')) || '') + module.exports.demoProps.album;
     }
     return new UI.Text({
         textAlign: 'left',
