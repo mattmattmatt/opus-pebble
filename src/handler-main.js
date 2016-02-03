@@ -161,6 +161,7 @@ module.exports.init = function(m, errorCallback) {
 
     mainScreen.on('click', 'up', function(e) {
         volume += 4;
+        volume = Math.min(volume, 100);
         api.send('Application.SetVolume', [volume], function(data) {
             volume = data.result;
         }, onNetworkError);
@@ -172,6 +173,7 @@ module.exports.init = function(m, errorCallback) {
 
     mainScreen.on('click', 'down', function(e) {
         volume -= 5;
+        volume = Math.max(volume, 0);
         api.send('Application.SetVolume', [volume], function(data) {
             volume = data.result;
         }, onNetworkError);
