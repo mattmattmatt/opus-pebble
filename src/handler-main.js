@@ -121,9 +121,9 @@ module.exports.init = function(m, errorCallback) {
             setTimeout(module.exports.updatePlayerState, 3200);
             setTimeout(module.exports.updatePlayerState, 5000);
         }
-        
+
         if (playState > 0) {
-            api.send('Player.PlayPause', [playerid, 'toggle'], module.exports.updatePlayerState, onNetworkError);
+            api.send('Player.PlayPause', [playerid, 'toggle'], module.exports.updatePlayerState);
         } else {
             switch (Settings.option('playActionWhenStopped')) {
                 case 'playLast':
@@ -145,7 +145,7 @@ module.exports.init = function(m, errorCallback) {
         if (Settings.option('vibeOnLongPress') !== false) {
             Vibe.vibrate('short');
         }
-        api.send('Player.GoTo', [playerid, 'previous'], module.exports.updatePlayerState, onNetworkError);
+        api.send('Player.GoTo', [playerid, 'previous'], module.exports.updatePlayerState);
 
         mixpanel.track('Button pressed, Previous');
     });
@@ -154,7 +154,7 @@ module.exports.init = function(m, errorCallback) {
         if (Settings.option('vibeOnLongPress') !== false) {
             Vibe.vibrate('short');
         }
-        api.send('Player.GoTo', [playerid, 'next'], module.exports.updatePlayerState, onNetworkError);
+        api.send('Player.GoTo', [playerid, 'next'], module.exports.updatePlayerState);
 
         mixpanel.track('Button pressed, Next');
     });
@@ -182,5 +182,7 @@ module.exports.init = function(m, errorCallback) {
             volume: volume
         });
     });
+
+    mainScreen.on('accelTap', module.exports.updatePlayerState);
 };
 
