@@ -71,8 +71,6 @@
     }
 
 
-
-
     (function init() {
         if (window.location.hash.substr(1)) {
             try {
@@ -86,6 +84,8 @@
 
                 log('Could not parse current configuration.');
             }
+        } else {
+            log('Detected blank config.');
         }
 
         setUiFromState(config);

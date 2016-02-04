@@ -30,10 +30,9 @@ function setUiFromState(config) {
     }
 
     if (!config.hosts || !config.hosts.length) {
-        console.log('Defaulting to one empty host')
         config.hosts = [{
             name: 'Kodi',
-            address: ''
+            address: config.ip || ''
         }];
     }
 
