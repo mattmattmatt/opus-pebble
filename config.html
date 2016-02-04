@@ -136,6 +136,22 @@
         (function () {
             var config;
 
+            // Get query variables
+            function getQueryParam(variable, defaultValue) {
+              // Find all URL parameters
+              var query = location.search.substring(1);
+              var vars = query.split('&');
+              for (var i = 0; i < vars.length; i++) {
+                var pair = vars[i].split('=');
+
+                // If the query variable parameter is found, decode it to use and return it for use
+                if (pair[0] === variable) {
+                  return decodeURIComponent(pair[1]);
+                }
+              }
+              return defaultValue || false;
+            }
+
             document.getElementById('form').addEventListener('submit', function(event) {
                 event.preventDefault();
                 event.stopPropagation();
@@ -156,7 +172,8 @@
                 mixpanel.track("Config saved", trackableSettings);
 
                 setTimeout(function() {
-                    document.location = 'pebblejs://close#' + encodeURIComponent(JSON.stringify(settings));
+                    // Set the return URL depending on the runtime environment
+                    document.location = getQueryParam('return_to', 'pebblejs://close#') + encodeURIComponent(JSON.stringify(settings));
                 }, 300);
             });
 
@@ -190,6 +207,9 @@
                 request.setRequestHeader('Content-type', 'application/javascript');
                 request.send();
             }
+
+
+
 
             (function init() {
                 try {
