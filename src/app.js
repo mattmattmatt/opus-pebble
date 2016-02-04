@@ -19,6 +19,7 @@ function checkUiUpdateability() {
 
 function onSettingsUpdated() {
     mainHandler.reset();
+    require('./screen-host-selector').screen().updateHostList();
     showMainScreen();
     checkUiUpdateability();
 }

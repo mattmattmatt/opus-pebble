@@ -141,6 +141,10 @@ module.exports.init = function(m, errorCallback) {
         });
     });
 
+    mainScreen.on('longclick', 'select', function(e) {
+        require('./screen-host-selector').screen().show();
+    });
+
     mainScreen.on('longClick', 'up', function(e) {
         if (Settings.option('vibeOnLongPress') !== false) {
             Vibe.vibrate('short');
