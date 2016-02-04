@@ -17,6 +17,7 @@ module.exports.track = function(event, properties) {
     console.log('Tracking ' + JSON.stringify(data) + ' ' + btoa(JSON.stringify(data)));
 
     if (require('./screen-main').DEMO_MODE) {
+        console.log('----> No tracking b/C DEMO MODE');
         return;
     }
     

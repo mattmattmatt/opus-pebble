@@ -141,8 +141,18 @@ module.exports.init = function(m, errorCallback) {
         });
     });
 
-    mainScreen.on('longclick', 'select', function(e) {
-        require('./screen-host-selector').screen().show();
+    mainScreen.on('longClick', 'select', function(e) {
+        if (Settings.option('vibeOnLongPress') !== false) {
+            Vibe.vibrate('short');
+        }
+        if (Settings.option('hosts') && Settings.option('hosts').length > 0) {
+            require('./screen-host-selector').screen().show();            
+        } else {
+            require('./screen-startup').screen().show();
+            mainScreen.hide();
+        }
+        
+        mixpanel.track('Button pressed, Host Selector');
     });
 
     mainScreen.on('longClick', 'up', function(e) {
