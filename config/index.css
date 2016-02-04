@@ -1,0 +1,19 @@
+.demo-card-wide {
+    margin: 20px auto 40px;
+}
+
+.mdl-card {
+    position: static;
+}
+
+#feedback {
+    text-align: right;
+    float: right;
+}
+
+.fixed-save {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 2;
+}
