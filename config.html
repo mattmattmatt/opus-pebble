@@ -2,22 +2,13 @@
 <html>
 
 <head>
-    <link rel="stylesheet" href="https://storage.googleapis.com/code.getmdl.io/1.0.6/material.blue-red.min.css" />
-    <script src="https://storage.googleapis.com/code.getmdl.io/1.0.6/material.min.js"></script>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style type="text/css">
-        .demo-card-wide {
-            margin: 20px auto 40px;
-        }
-
-        #feedback {
-            text-align: right;
-            float: right;
-        }
-
-
-    </style>
+    <link rel="stylesheet" href="https://storage.googleapis.com/code.getmdl.io/1.0.6/material.blue-red.min.css" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="config/index.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.2.1/lodash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+    <script src="https://storage.googleapis.com/code.getmdl.io/1.0.6/material.min.js"></script>
     <!-- start Mixpanel -->
     <script type="text/javascript">
         (function (e, b) {
@@ -27,6 +18,7 @@
                 b._i = [];
                 b.init = function (a, e, d) {
                     function f(b, h) {
+
                         var a = h.split(".");
                         2 == a.length && (b = b[a[0]], h = a[1]);
                         b[h] = function () {
@@ -74,11 +66,8 @@
                 <br /> Then confirm your changes with the "Save" button.
             </div>
             <div class="mdl-card__supporting-text">
-                <fieldset class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <input class="mdl-textfield__input" type="text" id="ip" name="ip" required="required" autocapitalize="off" autocorrect="off" >
-                    <label class="mdl-textfield__label" for="ip">Kodi IP Address</label>
-                    <span class="mdl-textfield__error">Enter Kodi's local IP address</span>
-                </fieldset>
+                <div id="host-container"></div>
+                <button id="add-host" type="button" class="mdl-button mdl-js-button mdl-button--raised ">Add another host</button>
             </div>
             <div class="mdl-card__supporting-text">
                 <fieldset >
@@ -92,6 +81,7 @@
                     </span>
                 </fieldset>
             </div>
+
             <div class="mdl-card__supporting-text">
                 <fieldset>
                     <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="switch-vibe-long-press">
@@ -122,126 +112,17 @@
                 </fieldset>
             </div>
             <div class="mdl-card__actions mdl-card--border">
-                <button type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
-                    Save
-                </button>
-                <p id="feedback"></p>
+                <p>Press the red button to save these settings.</p>
             </div>
+            <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--colored fixed-save js-save" type="submit">
+                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24.00004842877388" height="28" viewBox="0 0 24.00004842877388 28" data-code="61639" data-tags="floppy-o,save"><g fill="#fff" transform="scale(0.02734375 0.02734375)"><path d="M219.429 877.714h438.857v-219.429h-438.857v219.429zM731.429 877.714h73.143v-512q0-8-5.714-22t-11.429-19.714l-160.571-160.571q-5.714-5.714-19.429-11.429t-22.286-5.714v237.714q0 22.857-16 38.857t-38.857 16h-329.143q-22.857 0-38.857-16t-16-38.857v-237.714h-73.143v731.429h73.143v-237.714q0-22.857 16-38.857t38.857-16h475.429q22.857 0 38.857 16t16 38.857v237.714zM512 347.429v-182.857q0-7.429-5.429-12.857t-12.857-5.429h-109.714q-7.429 0-12.857 5.429t-5.429 12.857v182.857q0 7.429 5.429 12.857t12.857 5.429h109.714q7.429 0 12.857-5.429t5.429-12.857zM877.714 365.714v530.286q0 22.857-16 38.857t-38.857 16h-768q-22.857 0-38.857-16t-16-38.857v-768q0-22.857 16-38.857t38.857-16h530.286q22.857 0 50.286 11.429t43.429 27.429l160 160q16 16 27.429 43.429t11.429 50.286z" /></g></svg>
+            </button>
         </form>
     </div>
     <span id="log"></span>
 
-
-    <script type="text/javascript">
-        (function () {
-            var config;
-
-            // Get query variables
-            function getQueryParam(variable, defaultValue) {
-              // Find all URL parameters
-              var query = location.search.substring(1);
-              var vars = query.split('&');
-              for (var i = 0; i < vars.length; i++) {
-                var pair = vars[i].split('=');
-
-                // If the query variable parameter is found, decode it to use and return it for use
-                if (pair[0] === variable) {
-                  return decodeURIComponent(pair[1]);
-                }
-              }
-              return defaultValue || false;
-            }
-
-            document.getElementById('form').addEventListener('submit', function(event) {
-                event.preventDefault();
-                event.stopPropagation();
-
-                var settings = {
-                    ip: document.getElementById('ip').value.trim(),
-                    vibeOnLongPress: document.getElementById('switch-vibe-long-press').checked,
-                    updateUi: document.getElementById('switch-update-ui').checked,
-                    showClock: document.getElementById('switch-show-clock').checked,
-                    playActionWhenStopped: document.getElementById('option-play-last').checked ? 'playLast' : 'partymode'
-                };
-
-                log('Saved.<br />' + JSON.stringify(settings) + '<br/>' + encodeURIComponent(JSON.stringify(settings)));
-
-                var trackableSettings = JSON.parse(JSON.stringify(settings));
-                trackableSettings.kodiIp = settings.id;
-                delete trackableSettings.ip;
-                mixpanel.track("Config saved", trackableSettings);
-
-                setTimeout(function() {
-                    // Set the return URL depending on the runtime environment
-                    document.location = getQueryParam('return_to', 'pebblejs://close#') + encodeURIComponent(JSON.stringify(settings));
-                }, 300);
-            });
-
-            document.getElementById('ip').addEventListener('change', function(event) {
-                if (location.search.indexOf('testing') > -1) {
-                    sendKodiRequest();
-                }
-            });
-
-            function log(text) {
-                setTimeout(function() {
-                    document.getElementById('log').innerHTML = text;
-                }, 1000);
-            }
-
-            function sendKodiRequest() {
-                var request = new XMLHttpRequest();
-                var data = {
-                    'jsonrpc': '2.0',
-                    'method': 'JSONRPC.Ping',
-                    'id': Math.ceil(Math.random() * 10000)
-                };
-
-                request.addEventListener('load', function(data) {
-                    log('success' + JSON.stringify(data));
-                });
-                request.addEventListener('error', function(error) {
-                    log('error' + JSON.stringify(error));
-                });
-                request.open('GET', 'http://'+ document.getElementById('ip').value + '/jsonrpc?jsonCallback=bummm&request=' + encodeURIComponent(JSON.stringify(data)));
-                request.setRequestHeader('Content-type', 'application/javascript');
-                request.send();
-            }
-
-
-
-
-            (function init() {
-                try {
-                    config = JSON.parse(decodeURIComponent(window.location.hash.substr(1)));
-                    mixpanel.identify(config.uid);
-                    if (config.ip) {
-                        document.getElementById('ip').value = config.ip;
-                    }
-                    document.getElementById('switch-vibe-long-press').checked = config.vibeOnLongPress;
-                    document.getElementById('switch-update-ui').checked = config.updateUi;
-                    document.getElementById('switch-show-clock').checked = config.showClock;
-                    if (config.playActionWhenStopped === 'playLast') {
-                        document.getElementById('option-play-last').checked = true;
-                    } else {
-                        document.getElementById('option-partymode').checked = true;
-                    }
-                } catch (e) {
-                    document.getElementById('switch-vibe-long-press').checked = true;
-                    document.getElementById('switch-update-ui').checked = true;
-                    document.getElementById('switch-show-clock').checked = false;
-                    document.getElementById('option-partymode').checked = true;
-
-                    mixpanel.track('Config, Parsing error', {
-                        detectedHash: decodeURIComponent(window.location.hash.substr(1))
-                    });
-
-                    log('Could not parse current configuration.');
-                }
-                mixpanel.track('Config viewed');
-            })();
-        })();
-    </script>
+    <script src="config/settings.js"></script>
+    <script src="config/index.js"></script>
 </body>
 
 </html>

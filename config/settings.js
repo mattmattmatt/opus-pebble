@@ -14,6 +14,7 @@ function getStateFromUi() {
             })
         }
     });
+    settings.ip = settings.hosts[0] && settings.hosts[0].address || undefined;
     return settings;
 }
 
