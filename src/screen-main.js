@@ -4,7 +4,7 @@ var V = require('vector2');
 var UI = require('ui');
 var Settings = require('settings');
 
-module.exports.DEMO_MODE = true;
+module.exports.DEMO_MODE = false;
 
 module.exports.demoProps = {
     song: 'Open Eye Signal',
