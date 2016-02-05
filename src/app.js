@@ -120,10 +120,8 @@ function onNetworkError(error) {
         console.log('--------> DEMO MODE <---------');
     }
     Settings.option('uid', Pebble.getAccountToken());
-    // REMEMBER to update this before every public release!
-    mixpanel.track('App opened', {
-        appVersion: '1.7'
-    });
+
+    mixpanel.track('App opened');
 
     require('./settings-loader').init(onSettingsUpdated);
 
