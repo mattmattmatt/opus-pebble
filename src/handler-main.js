@@ -46,14 +46,14 @@ function onNetworkError(error) {
         retryTimeout = setTimeout(module.exports.updatePlayerState, 1000);
         console.log('Error, retrying in ' + (1000) + ' ms');
     } else {
-        console.log('Error limit reached');
+        console.log('Error limit reached. ' + JSON.stringify(error));
         updateText('Can\'t connect to Kodi', 'Ensure Kodi\'s IP is accessible from your phone.');
         onErrorCallback(error);
     }
 }
 
 module.exports.updatePlayerState = function() {
-    if (!Settings.option('ip')) {
+    if (!Settings.data('activeHost')) {
         updateText('No IP set', 'Please open the settings app on your phone.');
         return;
     }

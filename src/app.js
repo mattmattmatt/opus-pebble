@@ -20,8 +20,9 @@ function checkUiUpdateability() {
 
 function onSettingsUpdated() {
     mainHandler.reset();
-    require('./screen-host-selector').updateHostList();
-    showMainScreen();
+    if (showMainScreen()) {
+        require('./screen-host-selector').updateHostList();
+    }
     checkUiUpdateability();
 }
 
@@ -34,20 +35,23 @@ function showMainScreen() {
             mainScreen.show();
             startupScreen.hide();
         }
-        return;
+        return false;
     }
     
     var ip = Settings.option('ip');
     var hosts = Settings.option('hosts') || [];
+    
+    Settings.option('ip', null);
     
     if (!ip && !hosts.length) {
         startupScreen.show();
         mainScreen.hide();
         hostScreen.hide();
         console.log('showMainScreen: no IP and no hosts');
-        return;
+        return false;
     }
-    
+
+    // legacy case of no hosts but ip, should be removed soon
     if (ip && !hosts.length) {
         mainScreen.show();
         startupScreen.hide();
@@ -57,41 +61,57 @@ function showMainScreen() {
         
         // upgrade old clients to new settings
         Settings.option('hosts', [{name: 'Kodi', address: ip}]);
-        return;
+        Settings.data('activeHost', Settings.option('hosts')[0]);
+        return true;
     }  
     
     if (ip && hosts.length) {
         // ensure the value of IP is a member of the hosts array, otherwise show host selector
-        if (!hosts.some(function(host) {
-            return host.address === ip;
+        var validHostIndex;
+        if (hosts.some(function(host, index) {
+            var isValid = (host.address === ip);
+            if (isValid) {
+                validHostIndex = index;
+            }
+            return isValid;
         })) {
-            console.log('showMainScreen: IP not member of hosts, deleting IP. IP, hosts: ' + ip + ', ' + JSON.stringify(hosts));
-            ip = undefined;
-            Settings.option('ip', null);
-        } else {
             mainScreen.show();
             startupScreen.hide();
             hostScreen.hide();
+            Settings.data('activeHost', Settings.option('hosts')[validHostIndex]);
             console.log('showMainScreen: IP and hosts. IP, hosts: ' + ip + ', ' + JSON.stringify(hosts));
-            return;
+            return true;
+        } else {
+            console.log('showMainScreen: IP not member of hosts, deleting IP. IP, hosts: ' + ip + ', ' + JSON.stringify(hosts));
+            ip = undefined;
         }
     }
     
     if (!ip && hosts.length) {
         mainScreen.show();
-        hostScreen.show();
-        startupScreen.hide();
-        console.log('showMainScreen: no IP but hosts. hosts: ' + JSON.stringify(hosts));
-        return;
+        if (Settings.data('activeHost') && hosts.some(function(host) {
+            return JSON.stringify(host) === JSON.stringify(Settings.data('activeHost'));
+        })) {
+            hostScreen.hide();
+            startupScreen.hide();
+            console.log('showMainScreen: no IP but hosts and valid active host. hosts, activeHost: ' + JSON.stringify(hosts) + ', ' +  JSON.stringify(Settings.data('activeHost')));
+            return true;
+        } else {
+            hostScreen.show();
+            startupScreen.hide();
+            console.log('showMainScreen: no IP but hosts but no valid active host. hosts: ' + JSON.stringify(hosts));
+            return false;
+        }
     }
 }
 
 function onNetworkError(error) {
     clearInterval(updateRef);
     var errorScreen = require('./screen-error-network').screen(error);
+    hostScreen.show();
     errorScreen.show();
     mixpanel.track('Network error', {
-        kodiIp: Settings.option('ip')
+        kodiIp: Settings.data('activeHost').address
     });
 } 
 
@@ -100,7 +120,10 @@ function onNetworkError(error) {
         console.log('--------> DEMO MODE <---------');
     }
     Settings.option('uid', Pebble.getAccountToken());
-    mixpanel.track('App opened');
+    // REMEMBER to update this before every public release!
+    mixpanel.track('App opened', {
+        appVersion: '1.7'
+    });
 
     require('./settings-loader').init(onSettingsUpdated);
 

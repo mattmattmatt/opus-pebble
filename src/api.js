@@ -4,11 +4,11 @@ var ajax = require('ajax');
 var Settings = require('settings');
 
 module.exports.send = function(method, params, callback, errorCallback) {
-    var kodiIp = Settings.option('ip');
+    var kodiHost = Settings.data('activeHost');
     callback = callback || function() {};
     errorCallback = errorCallback || function() {};
 
-    if (!kodiIp) {
+    if (!kodiHost) {
         return false;
     }
     
@@ -18,10 +18,14 @@ module.exports.send = function(method, params, callback, errorCallback) {
         "params": params,
         "id": Math.ceil(Math.random() * 10000)
     };
-    console.log('Sending: ' + JSON.stringify(data, null, ''));
+
+    var authPart = (kodiHost.username && kodiHost.password) ? kodiHost.username + ':' + kodiHost.password + '@' : '';
+    
+    console.log('Sending ' + (authPart ? 'with auth ' + kodiHost.username : 'without auth') + ': ' + JSON.stringify(data, null, ''));
+
     ajax(
         {
-            url: 'http://' + kodiIp + '/jsonrpc?Base',
+            url: 'http://' + authPart + kodiHost.address + '/jsonrpc?Base',
             method: 'post',
             type: 'json',
             data: data
@@ -32,8 +36,12 @@ module.exports.send = function(method, params, callback, errorCallback) {
         },
         function(error, status, request) {
             console.log('ajax error: ' + method);
-            console.log(status + ': ' + JSON.stringify(error));
-            errorCallback(error);
+            var newError = {
+                httpStatusCode: status,
+                serverMessage: error
+            };
+            console.log(JSON.stringify(newError));
+            errorCallback(newError);
         }
     );
 };

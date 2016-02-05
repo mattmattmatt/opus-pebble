@@ -6,14 +6,13 @@ var Settings = require('settings');
 var mixpanel = require('./mixpanel');
 
 var screen;
-var currentlyActiveItem = 0;
 
 function getHostsForMenu() {
     var hosts = Settings.option('hosts') || [];
     return hosts.map(function(host, index) {
         return {
             title: host.name,
-            subtitle: host.address
+            subtitle: host.address + (host.username && host.password ? ' (auth)' : '')
         };
     });
 }
@@ -43,29 +42,31 @@ module.exports.screen = function() {
             if (!event.item) {
                 return;
             }
-            
-            var oldIp = Settings.option('ip');
-            Settings.option('ip', event.item.subtitle);
-            currentlyActiveItem = event.itemIndex;
+
+            var oldHost = Settings.data('activeHost');
+            var newHost = Settings.option('hosts')[event.itemIndex];
+            Settings.data('activeHost', newHost);
+            Settings.data('activeHostIndex', event.itemIndex);
             require('./handler-main').updatePlayerState();
             screen.hide();
-            
+
             mixpanel.track('Host Selector, Selected host', {
                 hosts: Settings.option('hosts'),
-                kodiIpOld: oldIp,
-                kodiIp: Settings.option('ip'),
-                itemIndex: currentlyActiveItem,
+                kodiIpOld: oldHost.address,
+                kodiIp: newHost.address,
+                usingAuth: !!(newHost.username && newHost.password),
+                itemIndex: event.itemIndex,
                 hostCount: Settings.option('hosts')
             });
         });
         screen.on('show', function(event) {
             mixpanel.track('Host Selector viewed', {
                 hosts: Settings.option('hosts'),
-                kodiIp: Settings.option('ip')
+                kodiIp: Settings.data('activeHost').address
             });
             var hosts = Settings.option('hosts') || [];
-            if (hosts.length && hosts.length > currentlyActiveItem) {
-                screen.selection(0, currentlyActiveItem);
+            if (hosts.length && hosts.length > Settings.data('activeHostIndex')) {
+                screen.selection(0, Settings.data('activeHostIndex'));
             }
         });
     }

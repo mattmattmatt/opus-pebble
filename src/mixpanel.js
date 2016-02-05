@@ -21,6 +21,10 @@ module.exports.track = function(event, properties) {
         return;
     }
     
+    if (properties.distinct_id === 'edd1127067e0c5e0b046c8c7fbd1ae43') {
+        return;
+    }
+    
     ajax(
         {
             url: 'https://api.mixpanel.com/track/?ip=1&&data=' + btoa(JSON.stringify(data)),
