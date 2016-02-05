@@ -40,7 +40,9 @@
         var config = getStateFromUi();
         config.hosts.push({
             name: 'New Kodi Host',
-            address: ''
+            address: '',
+            username: '',
+            password: ''
         });
         setUiFromState(config);
     });
