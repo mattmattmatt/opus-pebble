@@ -199,26 +199,34 @@ module.exports.init = function(m, errorCallback) {
     });
 
     mainScreen.on('click', 'up', function(e) {
+        var oldVolume = volume;
         volume += 4;
         volume = Math.min(volume, 100);
         api.send('Application.SetVolume', [volume], function(data) {
             volume = data.result;
         }, onNetworkError);
+        
+        mainUiComponents.setVolume(oldVolume, volume);
 
         mixpanel.track('Button pressed, Volume up', {
-            volume: volume
+            volume: volume,
+            oldVolume: oldVolume
         });
     });
 
     mainScreen.on('click', 'down', function(e) {
+        var oldVolume = volume;
         volume -= 5;
         volume = Math.max(volume, 0);
         api.send('Application.SetVolume', [volume], function(data) {
             volume = data.result;
         }, onNetworkError);
+        
+        mainUiComponents.setVolume(oldVolume, volume);
 
         mixpanel.track('Button pressed, Volume down', {
-            volume: volume
+            volume: volume,
+            oldVolume: oldVolume
         });
     });
 

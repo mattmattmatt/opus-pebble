@@ -1,8 +1,15 @@
 /* global module */
+/* jshint browser:true */
 
 var V = require('vector2');
 var UI = require('ui');
 var Settings = require('settings');
+
+var mainScreen;
+var volumeBar;
+var volumeBg;
+var volumeDesc;
+var volumeBarTimeout;
 
 module.exports.DEMO_MODE = false;
 
@@ -36,20 +43,22 @@ module.exports.actionDef = {
 };
 
 module.exports.screen = function() {
-    var screen = new UI.Window({
-        fullscreen: true,
-        action: module.exports.actionDef
-    });
+    if (!mainScreen) {
+        mainScreen = new UI.Window({
+            fullscreen: true,
+            action: module.exports.actionDef
+        });
 
-    var bg = new UI.Rect({
-        position: new V(0, 0),
-        size: new V(144, 168),
-        backgroundColor: '#00aaff'
-    });
+        var bg = new UI.Rect({
+            position: new V(0, 0),
+            size: new V(144, 168),
+            backgroundColor: '#00aaff'
+        });
 
-    screen.add(bg);
+        mainScreen.add(bg);
+    }
 
-    return screen;
+    return mainScreen;
 };
 
 module.exports.title = function(text) {
@@ -85,11 +94,74 @@ module.exports.time = function() {
     return new UI.TimeText({
         textAlign: 'center',
         position: new V(0, 0),
-        size: new V(144, 14),
+        size: new V(114, 14),
         font: 'gothic-14',
         color: '#ffffff',
         text: Settings.option('showClock') === true ? '%H:%M' : ''
     });
 };
 
+module.exports.setVolume = function(oldVolume, volume) {
+    var maxVolInPixels = 128;
+    var margin = 20;
+    clearTimeout(volumeBarTimeout);
+    if (!volumeBar) {
+        volumeBar = new UI.Rect({
+            position: new V(20, margin),
+            size: new V(74, 0),
+            backgroundColor: '#ffffff'
+        });
+        volumeBg = new UI.Rect({
+            position: new V(0, 14),
+            size: new V(144, 0),
+            backgroundColor: '#00aaff'
+        });
+        
+        volumeDesc = new UI.Text({
+            textAlign: 'left',
+            position: new V(20, maxVolInPixels + margin - 4),
+            size: new V(74, 0),
+            font: 'gothic-18',
+            color: '#ffffff',
+            text: 'Volume'
+        });
+        
+        mainScreen.add(volumeBg);
+        mainScreen.add(volumeBar);
+        mainScreen.add(volumeDesc);
+    }
+    
+    var bgSize = volumeBg.size();
+    bgSize.y = 154;
+    volumeBg.size(bgSize);
+    
+    var descSize = volumeDesc.size();
+    descSize.y = 18;
+    volumeDesc.size(descSize);
+    
+    var size = volumeBar.size();
+    size.y = Math.round(maxVolInPixels / 100 * oldVolume);
+    volumeBar.size(size);
+    
+    var pos = volumeBar.position();
+    pos.y = maxVolInPixels - size.y + margin;
+    volumeBar.position(pos);
+    
+    size.y = maxVolInPixels / 100 * volume;
+    pos.y = maxVolInPixels - size.y + margin;
+    volumeBar.animate({
+        position: pos,
+        size: size
+    }, 150);
 
+    volumeBarTimeout = setTimeout(function() {
+        size.y = 0;
+        volumeBar.size(size);
+        
+        bgSize.y = 0;
+        volumeBg.size(bgSize);
+        
+        descSize.y = 0;
+        volumeDesc.size(descSize);
+    }, 2000);
+};

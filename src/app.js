@@ -114,6 +114,9 @@ function showMainScreen() {
 
 function onNetworkError(error) {
     clearInterval(updateRef);
+    if (require('./screen-main').DEMO_MODE) {
+        return;
+    }
     var errorScreen = require('./screen-error-network').screen(error);
     hostScreen.show();
     errorScreen.show();
