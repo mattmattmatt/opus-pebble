@@ -52,6 +52,19 @@ function onNetworkError(error) {
     }
 }
 
+function updateActionBar(field, value) {
+    var actionDef = mainUiComponents.actionDef;
+    if (playState > 0) {
+        actionDef.select = 'images/pause.png';
+    } else {
+        actionDef.select = 'images/play.png';
+    }
+    if (field && value) {
+        actionDef[field] = value;
+    }
+    mainScreen.action(actionDef);
+}
+
 module.exports.updatePlayerState = function() {
     if (!Settings.data('activeHost')) {
         updateText('No IP set', 'Please open the settings app on your phone.');
@@ -68,16 +81,12 @@ module.exports.updatePlayerState = function() {
                 playertype = data.result[0].type;
 
                 api.send('Player.GetProperties', [playerid, ['percentage', 'speed']], function(data) {
-                    var actionDef = mainUiComponents.actionDef;
                     if (data.result.speed > 0) {
                         playState = 2;
-                        actionDef.select = 'images/pause.png';
-                        mainScreen.action(actionDef);
                     } else {
                         playState = 1;
-                        actionDef.select = 'images/play.png';
-                        mainScreen.action(actionDef);
                     }
+                    updateActionBar();
                 });
 
                 api.send('Player.GetItem', {'properties': ['title', 'album', 'artist', 'duration', 'runtime', 'showtitle'], 'playerid': playerid}, function(data) {
@@ -91,9 +100,7 @@ module.exports.updatePlayerState = function() {
             } else {
                 playState = 0;
                 updateText('Nothing playing', 'Press play to ' + (Settings.option('playActionWhenStopped') === 'playLast' ? 'start the last active playlist' : 'start the party'));
-                var actionDef = mainUiComponents.actionDef;
-                actionDef.select = 'images/play.png';
-                mainScreen.action(actionDef);
+                updateActionBar();
             }
         });
     },  onNetworkError);
@@ -142,6 +149,12 @@ module.exports.init = function(m, errorCallback) {
     });
 
     mainScreen.on('longClick', 'select', function(e) {
+        updateActionBar('select', 'images/ellipsis.png');
+        
+        setTimeout(function() {
+            updateActionBar();
+        }, 1000);
+        
         if (Settings.option('vibeOnLongPress') !== false) {
             Vibe.vibrate('short');
         }
@@ -156,6 +169,12 @@ module.exports.init = function(m, errorCallback) {
     });
 
     mainScreen.on('longClick', 'up', function(e) {
+        updateActionBar('up', 'images/previous.png');
+        
+        setTimeout(function() {
+            updateActionBar('up', 'images/volume_up.png');
+        }, 1000);
+        
         if (Settings.option('vibeOnLongPress') !== false) {
             Vibe.vibrate('short');
         }
@@ -165,6 +184,12 @@ module.exports.init = function(m, errorCallback) {
     });
 
     mainScreen.on('longClick', 'down', function(e) {
+        updateActionBar('down', 'images/next.png');
+        
+        setTimeout(function() {
+            updateActionBar('down', 'images/volume_down.png');
+        }, 1000);
+        
         if (Settings.option('vibeOnLongPress') !== false) {
             Vibe.vibrate('short');
         }

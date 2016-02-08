@@ -20,9 +20,8 @@ function checkUiUpdateability() {
 
 function onSettingsUpdated() {
     mainHandler.reset();
-    if (showMainScreen()) {
-        require('./screen-host-selector').updateHostList();
-    }
+    showMainScreen();
+    require('./screen-host-selector').updateHostList();
     checkUiUpdateability();
 }
 
@@ -97,10 +96,18 @@ function showMainScreen() {
             console.log('showMainScreen: no IP but hosts and valid active host. hosts, activeHost: ' + JSON.stringify(hosts) + ', ' +  JSON.stringify(Settings.data('activeHost')));
             return true;
         } else {
-            hostScreen.show();
-            startupScreen.hide();
-            console.log('showMainScreen: no IP but hosts but no valid active host. hosts: ' + JSON.stringify(hosts));
-            return false;
+            if (hosts.length === 1) {
+                Settings.data('activeHost', hosts[0]);
+                hostScreen.hide();
+                startupScreen.hide();
+                console.log('showMainScreen: no IP but hosts but no valid active host but choosing only available host. hosts: ' + JSON.stringify(hosts));                
+                return true;
+            } else {
+                hostScreen.show();
+                startupScreen.hide();                
+                console.log('showMainScreen: no IP but hosts but no valid active host. hosts: ' + JSON.stringify(hosts));
+                return false;
+            }
         }
     }
 }

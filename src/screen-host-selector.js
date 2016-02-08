@@ -52,7 +52,7 @@ module.exports.screen = function() {
 
             mixpanel.track('Host Selector, Selected host', {
                 hosts: Settings.option('hosts'),
-                kodiIpOld: oldHost.address,
+                kodiIpOld: oldHost && oldHost.address,
                 kodiIp: newHost.address,
                 usingAuth: !!(newHost.username && newHost.password),
                 itemIndex: event.itemIndex,
@@ -60,14 +60,14 @@ module.exports.screen = function() {
             });
         });
         screen.on('show', function(event) {
-            mixpanel.track('Host Selector viewed', {
-                hosts: Settings.option('hosts'),
-                kodiIp: Settings.data('activeHost').address
-            });
             var hosts = Settings.option('hosts') || [];
-            if (hosts.length && hosts.length > Settings.data('activeHostIndex')) {
+            if (hosts.length  && Settings.data('activeHostIndex') !== undefined && hosts.length > Settings.data('activeHostIndex')) {
                 screen.selection(0, Settings.data('activeHostIndex'));
             }
+            mixpanel.track('Host Selector viewed', {
+                hosts: Settings.option('hosts'),
+                kodiIp: Settings.data('activeHost') && Settings.data('activeHost').address
+            });
         });
     }
     return screen;

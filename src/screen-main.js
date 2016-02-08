@@ -29,9 +29,9 @@ if (module.exports.DEMO_MODE) {
 }
 
 module.exports.actionDef = {
-    up: 'images/previous.png',
+    up: 'images/volume_up.png',
     select: module.exports.DEMO_MODE && module.exports.demoProps.isPlaying ? 'images/pause.png' : 'images/play.png',
-    down: 'images/next.png',
+    down: 'images/volume_down.png',
     backgroundColor: '#ffffff'
 };
 
