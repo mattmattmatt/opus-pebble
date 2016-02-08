@@ -78,6 +78,9 @@
             try {
                 config = JSON.parse(decodeURIComponent(window.location.hash.substr(1)));
                 mixpanel.identify(config.uid);
+                mixpanel.people.set({
+                    uid: config.uid
+                });
             } catch (e) {
                 config = {};
                 mixpanel.track('Config, Parsing error', {
