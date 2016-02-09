@@ -10,13 +10,12 @@ var volumeBar;
 var volumeBg;
 var volumeDesc;
 var volumeBarTimeout;
+var volumeLabelBack;
+var volumeLabelFront;
 
 module.exports.DEMO_MODE = false;
 
 module.exports.demoProps = {
-    song: 'Open Eye Signal',
-    artist: 'Jon Hopkins',
-    album: 'Immunity',
     artist: 'Moderat',
     album: 'Moderat',
     song: 'A New Error',
@@ -26,6 +25,9 @@ module.exports.demoProps = {
     song: 'Nothing playing',
     album: 'Press play to start the last active playlist.',
     album: 'Press play to start the party!',
+    song: 'Open Eye Signal',
+    artist: 'Jon Hopkins',
+    album: 'Immunity',
     showClock: true,
     isPlaying: false,
     showStartup: false,
@@ -101,10 +103,19 @@ module.exports.time = function() {
     });
 };
 
+function setSizeOfElm(sizeValue, elm) {
+    var size = elm.size();
+    size.y = sizeValue;
+    elm.size(size);
+}
+
 module.exports.setVolume = function(oldVolume, volume) {
     var maxVolInPixels = 128;
     var margin = 20;
+    var textShadeOffset = 2;
+    
     clearTimeout(volumeBarTimeout);
+    
     if (!volumeBar) {
         volumeBar = new UI.Rect({
             position: new V(20, margin),
@@ -118,35 +129,54 @@ module.exports.setVolume = function(oldVolume, volume) {
         });
         
         volumeDesc = new UI.Text({
-            textAlign: 'left',
-            position: new V(20, maxVolInPixels + margin - 4),
+            textAlign: 'center',
+            position: new V(20, maxVolInPixels + margin - 42 - 2 - 28),
             size: new V(74, 0),
-            font: 'gothic-18',
-            color: '#ffffff',
+            font: 'gothic-28',
+            color: '#00aaff',
             text: 'Volume'
         });
         
+        volumeLabelBack = new UI.Text({
+            textAlign: 'center',
+            position: new V(20 + textShadeOffset, maxVolInPixels + margin - 42 - 6 + textShadeOffset),
+            size: new V(74, 0),
+            font: 'leco-42-numbers',
+            color: '#ffffff',
+            text: volume
+        });
+        
+        volumeLabelFront = new UI.Text({
+            textAlign: 'center',
+            position: new V(20, maxVolInPixels + margin - 42 - 6),
+            size: new V(74, 0),
+            font: 'leco-42-numbers',
+            color: '#00aaff',
+            text: volume
+        });
+        
         mainScreen.add(volumeBg);
+        mainScreen.add(volumeLabelBack);
         mainScreen.add(volumeBar);
+        mainScreen.add(volumeLabelFront);
         mainScreen.add(volumeDesc);
     }
     
-    var bgSize = volumeBg.size();
-    bgSize.y = 154;
-    volumeBg.size(bgSize);
+    volumeLabelBack.text(volume);
+    volumeLabelFront.text(volume);
     
-    var descSize = volumeDesc.size();
-    descSize.y = 18;
-    volumeDesc.size(descSize);
-    
-    var size = volumeBar.size();
-    size.y = Math.round(maxVolInPixels / 100 * oldVolume);
-    volumeBar.size(size);
+    setSizeOfElm(154, volumeBg);
+    setSizeOfElm(42, volumeDesc);
+    setSizeOfElm(42, volumeLabelFront);
+    setSizeOfElm(42, volumeLabelBack);
+    setSizeOfElm(Math.round(maxVolInPixels / 100 * oldVolume), volumeBar);
     
     var pos = volumeBar.position();
+    var size = volumeBar.size();
     pos.y = maxVolInPixels - size.y + margin;
     volumeBar.position(pos);
     
+    // animate new size and position of volume bar
     size.y = maxVolInPixels / 100 * volume;
     pos.y = maxVolInPixels - size.y + margin;
     volumeBar.animate({
@@ -155,13 +185,10 @@ module.exports.setVolume = function(oldVolume, volume) {
     }, 150);
 
     volumeBarTimeout = setTimeout(function() {
-        size.y = 0;
-        volumeBar.size(size);
-        
-        bgSize.y = 0;
-        volumeBg.size(bgSize);
-        
-        descSize.y = 0;
-        volumeDesc.size(descSize);
-    }, 2000);
+        setSizeOfElm(0, volumeBar);
+        setSizeOfElm(0, volumeBg);
+        setSizeOfElm(0, volumeDesc);
+        setSizeOfElm(0, volumeLabelBack);
+        setSizeOfElm(0, volumeLabelFront);
+    }, 2500);
 };

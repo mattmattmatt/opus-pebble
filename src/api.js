@@ -4,6 +4,10 @@ var ajax = require('ajax');
 var Settings = require('settings');
 
 module.exports.send = function(method, params, callback, errorCallback) {
+    if (require('./screen-main').DEMO_MODE) {
+        return;
+    }
+    
     var kodiHost = Settings.data('activeHost');
     callback = callback || function() {};
     errorCallback = errorCallback || function() {};
