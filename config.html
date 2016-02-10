@@ -62,9 +62,11 @@
         </div>
         <form id="form">
             <div class="mdl-card__supporting-text">
-                Configure Opus here. Then confirm your changes with the "Save" button.<br />
-                Don't know what to enter into these fields? Learn <a href="http://kodi.wiki/view/Settings/Services#Webserver" target="_blank">how to enable HTTP control of Kodi</a> in Kodi's settings.<br />
-                As the app is updating frequently these days, make sure you always have <a href="https://apps.getpebble.com/applications/56ac4a755319ec979400000d">the newest version of Opus from the app store</a>.
+                <p>
+                    Configure Opus here. Then confirm your changes with the red "Save" button.<br />
+                    Don't know what to enter into these fields? Learn <a href="http://kodi.wiki/view/Settings/Services#Webserver" target="_blank">how to enable HTTP control of Kodi</a> in Kodi's settings.<br />
+<!--                    As the app is updating frequently these days, make sure you always have <a href="https://apps.getpebble.com/applications/56ac4a755319ec979400000d">the newest version of Opus from the app store</a>.-->
+                </p>
             </div>
             <div class="mdl-card__supporting-text">
                 <div id="host-container"></div>
@@ -112,7 +114,7 @@
                     </label>
                 </fieldset>
             </div>
-            <div class="mdl-card__actions mdl-card--border">
+            <div class="mdl-card__actions mdl-card__supporting-text mdl-card--border">
                 <p>Press the red button to save these settings.</p>
             </div>
             <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--colored fixed-save js-save" type="submit">
@@ -122,18 +124,29 @@
     </div>
     <div class="demo-card-wide mdl-card mdl-shadow--2dp">
         <div class="mdl-card__title">
+            <h3 class="mdl-card__title-text">Support</h3>
+        </div>
+        <div class="mdl-card__actions mdl-card--border">
+           <div class="mdl-card__supporting-text">
+                <p>
+                    Do you have problems? Found a bug? Have a feature request?<br />
+                    <a href="https://github.com/mattmattmatt/opus-pebble/issues" target="_blank" class="js-track-issues-link">File an issue</a>, we'll take a look at it asap and you'll receive an update whenever your request has been handled.
+                </p>
+            </div>
+        </div>
+    </div>
+       <div class="demo-card-wide mdl-card mdl-shadow--2dp">
+        <div class="mdl-card__title">
             <h3 class="mdl-card__title-text">Love this app?</h3>
         </div>
         <div class="mdl-card__actions mdl-card--border">
            <div class="mdl-card__supporting-text">
                 <p>
-                    <strong>
-                        Buy us a beer!
-                    </strong>
+                    <strong>Buy us a beer!</strong> Or a lemonade.
                 </p>
                 <p>
                     The development of Opus takes some considerable amount of time. Time well spent, and time spent on a fun and beautiful project. So no obligations here.<br />
-                    But if you still feel like this is a great app and you'd like to encourage more of its develpoment, you can buy us a beer.
+                    But if you still feel like you want to encourage more of Opus' develpoment, you can buy us a beer.
                 </p>
 
                 <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top" id="paypal-form">

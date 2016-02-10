@@ -17,3 +17,9 @@
     right: 20px;
     z-index: 2;
 }
+
+.mdl-card__supporting-text > p:last-child,
+.mdl-card__supporting-text > ul:last-child,
+.mdl-card__actions  > p:last-child {
+    margin-bottom: 0;
+}

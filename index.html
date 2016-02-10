@@ -11,16 +11,16 @@
             margin: 20px auto;
         }
 
-        #feedback {
-            text-align: right;
-            float: right;
-        }
-
         .bg-img {
             color: #fff;
             height: 145px;
             background: url('https://assets.getpebble.com/api/file/rbIsgJSWSrS8cPr22kkE/convert?cache=true') center / cover no-repeat;
         }
+
+        .mdl-card__supporting-text > p:last-child, .mdl-card__supporting-text > ul:last-child {
+            margin-bottom: 0;
+        }
+
     </style>
     <!-- start Mixpanel -->
     <script type="text/javascript">
@@ -75,17 +75,22 @@
             <h2 class="mdl-card__title-text">Opus - A Kodi remote for your Pebble wrist watch</h2>
         </div>
         <div class="mdl-card__supporting-text">
-            Find <a href="https://apps.getpebble.com/en_US/application/56ac4a755319ec979400000d" class="js-track-store-link">Opus on the Pebble app store</a>.
-        </div>
-        <div class="mdl-card__supporting-text">
+           <p>
+                Find <a href="https://apps.getpebble.com/en_US/application/56ac4a755319ec979400000d" class="js-track-store-link">Opus on the Pebble app store</a>.
+           </p>
+           <p>
             Things to do:
+            </p>
             <ul>
-                <li>Video mode: Show movie/TV show title, current position</li>
+                <li>Show current track/video position</li>
                 <li>Remote menu navigation</li>
                 <li>Starting of playlists/party mode</li>
-                <li>Watch mode that also shows the current time</li>
                 <li>Voice control</li>
             </ul>
+           <p>
+                Do you have problems? Found a bug? Have a feature request?<br />
+                <a href="https://github.com/mattmattmatt/opus-pebble/issues" target="_blank" class="js-track-issues-link">File an issue</a>, we'll take a look at it asap and you'll receive an update whenever your request has been handled.
+           </p>
         </div>
         <div class="mdl-card__actions mdl-card--border">
             <a href="https://apps.getpebble.com/en_US/application/56ac4a755319ec979400000d" class="js-track-store-link mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
@@ -97,6 +102,8 @@
         mixpanel.track("Homepage viewed");
 
         mixpanel.track_links(".js-track-store-link", "Homepage, Store link clicked");
+
+        mixpanel.track_links(".js-track-issues-link", "Homepage, Issues link clicked");
     </script>
     <a href="https://mixpanel.com/f/partner" rel="nofollow"><img src="//cdn.mxpnl.com/site_media/images/partner/badge_light.png" alt="Mobile Analytics" style="opacity:0; overflow:hidden; height:0px;" /></a>
 </body>

@@ -51,6 +51,10 @@
         setUiFromState(config);
     });
 
+    document.getElementsByClassName('js-track-issues-link')[0].addEventListener('click', function (event) {
+        mixpanel.track('Config, Issues link clicked');
+    });
+
     function log(text) {
         setTimeout(function () {
             document.getElementById('log').innerHTML = text;
