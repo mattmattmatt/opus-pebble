@@ -22,7 +22,7 @@
 
         log('Saved.<br />' + JSON.stringify(settings) + '<br/> &nbsp; ' + encodeURIComponent(JSON.stringify(settings)) + ' &nbsp;<br/>&nbsp; ');
 
-        mixpanel.track("Config saved", settings);
+        mixpanel.track('Config saved', settings);
 
         setTimeout(function () {
             // Set the return URL depending on the runtime environment
@@ -34,6 +34,10 @@
         event.preventDefault();
         event.stopPropagation();
         saveSettings();
+    });
+
+    document.getElementById('paypal-form').addEventListener('submit', function(event) {
+        mixpanel.track('Paypal clicked');
     });
 
     document.getElementById('add-host').addEventListener('click', function (event) {
