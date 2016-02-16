@@ -130,6 +130,7 @@ function onNetworkError(error) {
         console.log('--------> DEMO MODE <---------');
     }
     Settings.option('uid', Pebble.getAccountToken());
+    // TODO: Set people property here
 
     mixpanel.track('App opened');
 
@@ -139,4 +140,6 @@ function onNetworkError(error) {
     showMainScreen();
     
     checkUiUpdateability();
+    
+    require('./screen-update-notification').init();
 })();
