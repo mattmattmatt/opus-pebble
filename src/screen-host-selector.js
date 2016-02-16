@@ -56,7 +56,7 @@ module.exports.screen = function() {
                 kodiIp: newHost.address,
                 usingAuth: !!(newHost.username && newHost.password),
                 itemIndex: event.itemIndex,
-                hostCount: Settings.option('hosts')
+                hostCount: Settings.option('hosts').length
             });
         });
         screen.on('show', function(event) {
