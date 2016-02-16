@@ -13,7 +13,7 @@ var volumeBarTimeout;
 var volumeLabelBack;
 var volumeLabelFront;
 
-module.exports.DEMO_MODE = true;
+module.exports.DEMO_MODE = false;
 
 module.exports.demoProps = {
     artist: 'Moderat',
