@@ -13,6 +13,7 @@ var playerid = 0;
 var playertype = 'audio';
 var playState = 0;
 var errors = 0;
+var networkSuccessTracked = false;
 
 var titleUi;
 var descriptionUi;
@@ -52,6 +53,13 @@ function onNetworkError(error) {
     }
 }
 
+function onNetworkSuccess() {
+    if (!networkSuccessTracked) {
+        networkSuccessTracked = true;
+        require('./mixpanel').track('Network success');
+    }
+}
+
 function updateActionBar(field, value) {
     var actionDef = mainUiComponents.actionDef;
     if (playState > 1) {
@@ -74,6 +82,8 @@ module.exports.updatePlayerState = function() {
     api.send('Application.GetProperties', [['volume', 'muted']], function onSuccess(data) {
         errors = 0;
         volume = data.result.volume;
+        
+        onNetworkSuccess();
 
         api.send('Player.GetActivePlayers', [], function(data) {
             if (data.result.length > 0) {
@@ -102,6 +112,7 @@ module.exports.updatePlayerState = function() {
                 updateText('Nothing playing', 'Press play to ' + (Settings.option('playActionWhenStopped') === 'playLast' ? 'start the last active playlist' : 'start the party'));
                 updateActionBar();
             }
+            onNetworkSuccess();
         });
     },  onNetworkError);
 
