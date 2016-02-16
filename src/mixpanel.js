@@ -7,11 +7,20 @@ var appinfo = require('../appinfo.json');
 
 var MIXPANEL_TOKEN = '6229cfb42de97ef516b9da89c4f96ac1';
 
+function getWatchInfo() {
+    if (Pebble.getActiveWatchInfo) {
+        return Pebble.getActiveWatchInfo();
+    } else {
+        return {};
+    }
+}
+
 module.exports.track = function(event, properties) {
     properties = properties || {};
     properties.distinct_id = Pebble.getAccountToken();
     properties.token = MIXPANEL_TOKEN;
     properties.appVersion = appinfo.versionLabel;
+    properties.watchInfo = getWatchInfo();
 
     var data = {
         event: event,
@@ -24,7 +33,7 @@ module.exports.track = function(event, properties) {
         console.log('----> No tracking b/C DEMO MODE');
         return;
     }
-    
+
     ajax(
         {
             url: 'https://api.mixpanel.com/track/?ip=1&&data=' + btoa(JSON.stringify(data)),
@@ -48,7 +57,8 @@ module.exports.trackAppOpened = function() {
     });
     module.exports.engage({
         $set: {
-            'App Version': appinfo.versionLabel
+            'App Version': appinfo.versionLabel,
+            'Watch Info': JSON.stringify(getWatchInfo())
         }
     });
     module.exports.track('App opened');
@@ -65,7 +75,7 @@ module.exports.engage = function(properties) {
         console.log('----> No tracking b/C DEMO MODE');
         return;
     }
-    
+
     ajax(
         {
             url: 'https://api.mixpanel.com/engage/?ip=1&&data=' + btoa(JSON.stringify(properties)),
