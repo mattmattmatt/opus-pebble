@@ -130,9 +130,8 @@ function onNetworkError(error) {
         console.log('--------> DEMO MODE <---------');
     }
     Settings.option('uid', Pebble.getAccountToken());
-    // TODO: Set people property here
-
-    mixpanel.track('App opened');
+    
+    mixpanel.trackAppOpened();
 
     require('./settings-loader').init(onSettingsUpdated);
 

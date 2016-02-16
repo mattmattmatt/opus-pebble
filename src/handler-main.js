@@ -139,7 +139,7 @@ module.exports.init = function(m, errorCallback) {
                 case 'partymode':
                     /*falls through*/
                 default:
-                    api.send('Player.SetPartymode', [playerid, 'toggle'], onSuccessfulPlay, onNetworkError);
+                    api.send('Player.SetPartymode', [0, 'toggle'], onSuccessfulPlay, onNetworkError);
                     break;
             }
         }
@@ -204,6 +204,7 @@ module.exports.init = function(m, errorCallback) {
         volume = Math.min(volume, 100);
         api.send('Application.SetVolume', [volume], function(data) {
             volume = data.result;
+            module.exports.updatePlayerState();
         }, onNetworkError);
         
         mainUiComponents.setVolume(oldVolume, volume);
@@ -220,6 +221,7 @@ module.exports.init = function(m, errorCallback) {
         volume = Math.max(volume, 0);
         api.send('Application.SetVolume', [volume], function(data) {
             volume = data.result;
+            module.exports.updatePlayerState();
         }, onNetworkError);
         
         mainUiComponents.setVolume(oldVolume, volume);
