@@ -54,7 +54,7 @@ function onNetworkError(error) {
 
 function updateActionBar(field, value) {
     var actionDef = mainUiComponents.actionDef;
-    if (playState > 0) {
+    if (playState > 1) {
         actionDef.select = 'images/pause.png';
     } else {
         actionDef.select = 'images/play.png';

@@ -190,5 +190,5 @@ module.exports.setVolume = function(oldVolume, volume) {
         setSizeOfElm(0, volumeDesc);
         setSizeOfElm(0, volumeLabelBack);
         setSizeOfElm(0, volumeLabelFront);
-    }, 2500);
+    }, 2200);
 };
