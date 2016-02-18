@@ -161,7 +161,8 @@ module.exports.init = function(m, errorCallback) {
             }
         }
         mixpanel.track('Button pressed, PlayPause', {
-            playState: playState
+            playState: playState,
+            playerType: playertype
         });
     });
 
@@ -197,7 +198,9 @@ module.exports.init = function(m, errorCallback) {
         }
         api.send('Player.GoTo', [playerid, 'previous'], module.exports.updatePlayerState);
 
-        mixpanel.track('Button pressed, Previous');
+        mixpanel.track('Button pressed, Previous', {
+            playerType: playertype
+        });
     });
 
     mainScreen.on('longClick', 'down', function(e) {
@@ -212,7 +215,9 @@ module.exports.init = function(m, errorCallback) {
         }
         api.send('Player.GoTo', [playerid, 'next'], module.exports.updatePlayerState);
 
-        mixpanel.track('Button pressed, Next');
+        mixpanel.track('Button pressed, Next', {
+            playerType: playertype
+        });
     });
 
     mainScreen.on('click', 'up', function(e) {
@@ -228,7 +233,8 @@ module.exports.init = function(m, errorCallback) {
 
         mixpanel.track('Button pressed, Volume up', {
             volume: volume,
-            oldVolume: oldVolume
+            oldVolume: oldVolume,
+            playerType: playertype
         });
     });
 
@@ -245,7 +251,8 @@ module.exports.init = function(m, errorCallback) {
 
         mixpanel.track('Button pressed, Volume down', {
             volume: volume,
-            oldVolume: oldVolume
+            oldVolume: oldVolume,
+            playerType: playertype
         });
     });
 
