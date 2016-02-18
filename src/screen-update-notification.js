@@ -30,6 +30,10 @@ function showUpdateNotification(newestVersion, runningVersion) {
     notificationScreen.show();
 }
 
+module.exports.getScreen = function() {
+    return notificationScreen;
+};
+
 module.exports.init = function() {
     ajax(
         {

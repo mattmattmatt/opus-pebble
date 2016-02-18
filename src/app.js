@@ -6,15 +6,28 @@ var mixpanel = require('./mixpanel');
 var mainScreen = require('./screen-main').screen();
 var startupScreen = require('./screen-startup').screen();
 var hostScreen = require('./screen-host-selector').screen();
+var errorScreen = require('./screen-error-network').screen();
+var UpdateNotificationScreen = require('./screen-update-notification');
 var mainHandler = require('./handler-main');
 
 var updateRef;
 
+function getUpdateInterval() {
+    if (mainHandler.getPlayerType() === 'audio') {
+        return 12 * 1000;
+    } else if (mainHandler.getPlayerType() === 'video') {
+        return 3 * 60 * 1000;
+    } else {
+        return 60 * 1000;
+    }
+}
+
 function checkUiUpdateability() {
-    clearInterval(updateRef);
+    clearTimeout(updateRef);
     if (Settings.option('updateUi')) {
-        mainHandler.updatePlayerState();            
-        updateRef = setTimeout(checkUiUpdateability, 10000);
+        console.log('auto-updating, next update in ' + (getUpdateInterval() / 1000) + 's');
+        mainHandler.updatePlayerState();
+        updateRef = setTimeout(checkUiUpdateability, getUpdateInterval());
     }  
 }
 
@@ -22,7 +35,14 @@ function onSettingsUpdated() {
     mainHandler.reset();
     showMainScreen();
     require('./screen-host-selector').updateHostList();
-    checkUiUpdateability();
+    
+    // give the UI a bit to cool down, that's necessary for some reason :(
+    setTimeout(function() {
+        checkUiUpdateability();
+        if (!Settings.option('updateUi')) {
+            mainHandler.updatePlayerState();
+        }
+    }, 500);
 }
 
 function showMainScreen() {
@@ -37,89 +57,71 @@ function showMainScreen() {
         return false;
     }
     
-    var ip = Settings.option('ip');
     var hosts = Settings.option('hosts') || [];
     
-    Settings.option('ip', null);
+    errorScreen.hide();
     
-    if (!ip && !hosts.length) {
+    if (!hosts.length) {
         startupScreen.show();
         mainScreen.hide();
         hostScreen.hide();
-        console.log('showMainScreen: no IP and no hosts');
+        console.log('showMainScreen: no hosts');
         return false;
-    }
-
-    // legacy case of no hosts but ip, should be removed soon
-    if (ip && !hosts.length) {
+    } else {
         mainScreen.show();
-        startupScreen.hide();
-        hostScreen.hide();
-        
-        console.log('showMainScreen: IP but no hosts, upgrading. IP: ' + ip);
-        
-        // upgrade old clients to new settings
-        Settings.option('hosts', [{name: 'Kodi', address: ip}]);
-        Settings.data('activeHost', Settings.option('hosts')[0]);
-        return true;
-    }  
-    
-    if (ip && hosts.length) {
-        // ensure the value of IP is a member of the hosts array, otherwise show host selector
-        var validHostIndex;
-        if (hosts.some(function(host, index) {
-            var isValid = (host.address === ip);
-            if (isValid) {
-                validHostIndex = index;
-            }
-            return isValid;
-        })) {
-            mainScreen.show();
-            startupScreen.hide();
-            hostScreen.hide();
-            Settings.data('activeHost', Settings.option('hosts')[validHostIndex]);
-            console.log('showMainScreen: IP and hosts. IP, hosts: ' + ip + ', ' + JSON.stringify(hosts));
-            return true;
-        } else {
-            console.log('showMainScreen: IP not member of hosts, deleting IP. IP, hosts: ' + ip + ', ' + JSON.stringify(hosts));
-            ip = undefined;
-        }
-    }
-    
-    if (!ip && hosts.length) {
-        mainScreen.show();
+        // ensure the value of activeHost is a member of the hosts array, otherwise show host selector
         if (Settings.data('activeHost') && hosts.some(function(host) {
             return JSON.stringify(host) === JSON.stringify(Settings.data('activeHost'));
         })) {
             hostScreen.hide();
             startupScreen.hide();
-            console.log('showMainScreen: no IP but hosts and valid active host. hosts, activeHost: ' + JSON.stringify(hosts) + ', ' +  JSON.stringify(Settings.data('activeHost')));
+            console.log('showMainScreen: hosts and valid active host. hosts, activeHost: ' + JSON.stringify(hosts) + ', ' +  JSON.stringify(Settings.data('activeHost')));
             return true;
         } else {
             if (hosts.length === 1) {
                 Settings.data('activeHost', hosts[0]);
                 hostScreen.hide();
                 startupScreen.hide();
-                console.log('showMainScreen: no IP but hosts but no valid active host but choosing only available host. hosts: ' + JSON.stringify(hosts));                
+                console.log('showMainScreen: hosts but no valid active host but choosing only available host. hosts: ' + JSON.stringify(hosts));                
                 return true;
             } else {
                 hostScreen.show();
                 startupScreen.hide();                
-                console.log('showMainScreen: no IP but hosts but no valid active host. hosts: ' + JSON.stringify(hosts));
+                console.log('showMainScreen: hosts but no valid active host. hosts: ' + JSON.stringify(hosts));
                 return false;
             }
         }
     }
 }
 
+function killApp() {
+    mixpanel.track('App killed');
+    console.log('--> Killing the app.');
+    if (UpdateNotificationScreen.getScreen()) {
+        UpdateNotificationScreen.getScreen().hide();
+    }
+    startupScreen.hide();
+    hostScreen.hide();
+    mainScreen.hide();
+    errorScreen.hide();
+}
+
 function onNetworkError(error) {
-    clearInterval(updateRef);
+    clearTimeout(updateRef);
     if (require('./screen-main').DEMO_MODE) {
         return;
     }
-    var errorScreen = require('./screen-error-network').screen(error);
-    hostScreen.show();
+
+    if (UpdateNotificationScreen.getScreen()) {
+        UpdateNotificationScreen.getScreen().hide();
+    }
+    if (Settings.option('hosts').length > 1) {
+        hostScreen.show();
+    }
+    
+    require('./screen-error-network').update(error, killApp);
     errorScreen.show();
+    
     mixpanel.track('Network error', {
         kodiIp: Settings.data('activeHost').address
     });
@@ -140,5 +142,5 @@ function onNetworkError(error) {
     
     checkUiUpdateability();
     
-    require('./screen-update-notification').init();
+    UpdateNotificationScreen.init();
 })();

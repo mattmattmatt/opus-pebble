@@ -5,6 +5,8 @@ var btoa = require('shims').btoa;
 
 var appinfo = require('../appinfo.json');
 
+var SHOULD_LOG = true;
+
 var MIXPANEL_TOKEN = '6229cfb42de97ef516b9da89c4f96ac1';
 
 function getWatchInfo() {
@@ -27,7 +29,7 @@ module.exports.track = function(event, properties) {
         properties: properties
     };
 
-    console.log('Tracking ' + JSON.stringify(data) + ' ' + btoa(JSON.stringify(data)));
+    if (SHOULD_LOG) console.log('Tracking ' + JSON.stringify(data) + ' ' + btoa(JSON.stringify(data)));
 
     if (require('./screen-main').DEMO_MODE) {
         console.log('----> No tracking b/C DEMO MODE');
@@ -40,11 +42,11 @@ module.exports.track = function(event, properties) {
             method: 'get'
         },
         function(data, status, request) {
-            console.log('Tracking response ' + status + ': ' + JSON.stringify(data));
+            if (SHOULD_LOG) console.log('Tracking response ' + status + ': ' + JSON.stringify(data));
         },
         function(error, status, request) {
-            console.log('Tracking error');
-            console.log(status + ': ' + JSON.stringify(error));
+            if (SHOULD_LOG) console.log('Tracking error');
+            if (SHOULD_LOG) console.log(status + ': ' + JSON.stringify(error));
         }
     );
 };
@@ -69,7 +71,7 @@ module.exports.engage = function(properties) {
     properties.$distinct_id = Pebble.getAccountToken();
     properties.$token = MIXPANEL_TOKEN;
 
-    console.log('Tracking set ' + JSON.stringify(properties) + ' ' + btoa(JSON.stringify(properties)));
+    if (SHOULD_LOG) console.log('Tracking set ' + JSON.stringify(properties) + ' ' + btoa(JSON.stringify(properties)));
 
     if (require('./screen-main').DEMO_MODE) {
         console.log('----> No tracking b/C DEMO MODE');
@@ -82,11 +84,11 @@ module.exports.engage = function(properties) {
             method: 'get'
         },
         function(data, status, request) {
-            console.log('Tracking set response ' + status + ': ' + JSON.stringify(data));
+            if (SHOULD_LOG) console.log('Tracking set response ' + status + ': ' + JSON.stringify(data));
         },
         function(error, status, request) {
-            console.log('Tracking set error');
-            console.log(status + ': ' + JSON.stringify(error));
+            if (SHOULD_LOG) console.log('Tracking set error');
+            if (SHOULD_LOG) console.log(status + ': ' + JSON.stringify(error));
         }
     );
 };

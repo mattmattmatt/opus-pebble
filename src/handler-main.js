@@ -10,7 +10,7 @@ var mainUiComponents = require('./screen-main');
 
 var volume = 0;
 var playerid = 0;
-var playertype = 'audio';
+var playertype;
 var playState = 0;
 var errors = 0;
 var networkSuccessTracked = false;
@@ -33,6 +33,7 @@ function addUi() {
     mainScreen.add(titleUi = mainUiComponents.title());
     mainScreen.add(descriptionUi = mainUiComponents.description());
     mainScreen.add(timeUi = mainUiComponents.time());
+    updateText('Trying to connect...', 'Hang on for just a second.');
 }
 
 function updateText(title, desc) {
@@ -73,6 +74,10 @@ function updateActionBar(field, value) {
     mainScreen.action(actionDef);
 }
 
+module.exports.getPlayerType = function() {
+    return playertype;
+};
+
 module.exports.updatePlayerState = function() {
     if (!Settings.data('activeHost')) {
         updateText('No IP set', 'Please open the settings app on your phone.');
@@ -109,6 +114,7 @@ module.exports.updatePlayerState = function() {
                 });
             } else {
                 playState = 0;
+                playertype = undefined;
                 updateText('Nothing playing', 'Press play to ' + (Settings.option('playActionWhenStopped') === 'playLast' ? 'start the last active playlist' : 'start the party'));
                 updateActionBar();
             }
@@ -119,9 +125,9 @@ module.exports.updatePlayerState = function() {
 };
 
 module.exports.reset = function() {
+    errors = 0;
     clearUi();
     addUi();
-    module.exports.updatePlayerState();
 };
 
 module.exports.init = function(m, errorCallback) {

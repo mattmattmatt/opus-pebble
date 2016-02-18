@@ -3,6 +3,8 @@
 var ajax = require('ajax');
 var Settings = require('settings');
 
+var SHOULD_LOG = true;
+
 module.exports.send = function(method, params, callback, errorCallback) {
     if (require('./screen-main').DEMO_MODE) {
         return;
@@ -25,7 +27,7 @@ module.exports.send = function(method, params, callback, errorCallback) {
 
     var authPart = (kodiHost.username && kodiHost.password) ? kodiHost.username + ':' + kodiHost.password + '@' : '';
     
-    console.log('Sending ' + (authPart ? 'with auth ' + kodiHost.username : 'without auth') + ': ' + JSON.stringify(data, null, ''));
+    if (SHOULD_LOG) console.log('Sending ' + (authPart ? 'with auth ' + kodiHost.username : 'without auth') + ': ' + JSON.stringify(data, null, ''));
 
     ajax(
         {
@@ -35,16 +37,16 @@ module.exports.send = function(method, params, callback, errorCallback) {
             data: data
         },
         function(data, status, request) {
-            console.log(status + ': ' + JSON.stringify(data));
+            if (SHOULD_LOG) console.log(status + ': ' + JSON.stringify(data));
             callback(data);
         },
         function(error, status, request) {
-            console.log('ajax error: ' + method);
+            if (SHOULD_LOG) console.log('ajax error: ' + method);
             var newError = {
                 httpStatusCode: status,
                 serverMessage: error
             };
-            console.log(JSON.stringify(newError));
+            if (SHOULD_LOG) console.log(JSON.stringify(newError));
             errorCallback(newError);
         }
     );

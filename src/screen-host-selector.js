@@ -47,6 +47,7 @@ module.exports.screen = function() {
             var newHost = Settings.option('hosts')[event.itemIndex];
             Settings.data('activeHost', newHost);
             Settings.data('activeHostIndex', event.itemIndex);
+            require('./handler-main').reset();
             require('./handler-main').updatePlayerState();
             screen.hide();
 
