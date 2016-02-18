@@ -20,8 +20,8 @@ function startTimer() {
 }
 
 function setupEventListeners() {
-//    errorScreen.on('show', startTimer);
-//    errorScreen.on('hide', clearTimer);
+    errorScreen.on('show', startTimer);
+    errorScreen.on('hide', clearTimer);
 }
 
 module.exports.update = function(error, killCb) {
