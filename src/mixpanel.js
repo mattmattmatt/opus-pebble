@@ -1,5 +1,6 @@
 /* global module  */
 
+var Settings = require('settings');
 var ajax = require('ajax');
 var btoa = require('shims').btoa;
 
@@ -63,7 +64,9 @@ module.exports.trackAppOpened = function() {
             'Watch Info': JSON.stringify(getWatchInfo())
         }
     });
-    module.exports.track('App opened');
+    module.exports.track('App opened', {
+        settings: JSON.stringify(Settings.option())
+    });
 };
 
 module.exports.engage = function(properties) {
