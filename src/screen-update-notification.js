@@ -4,13 +4,14 @@
 var ajax = require('ajax');
 var UI = require('ui');
 
+var lib = require('./lib');
+
 var notificationScreen;
 
 function getMessage(data, runningVersion) {
     var message = '';
-    var changelogs = data.changelog;
     var foundNewVersions = false;
-    var applicableChangelogs = changelogs.filter(function(entry) {
+    var applicableChangelogs = data.changelog.filter(function(entry) {
         if (entry.version === runningVersion) {
             foundNewVersions = true;
         }
@@ -35,7 +36,7 @@ function showUpdateNotification(newestVersion, runningVersion, message) {
         notificationScreen = new UI.Card({
             fullscreen: false,
             scrollable: true,
-            backgroundColor: '#00AA55',
+            backgroundColor: lib.getWatchInfo().platform === 'aplite' ? '#000000' : '#00AA55',
             titleColor: '#ffffff',
             subtitleColor: '#ffffff',
             bodyColor: '#ffffff',

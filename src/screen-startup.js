@@ -3,6 +3,8 @@
 var V = require('vector2');
 var UI = require('ui');
 
+var lib = require('./lib');
+
 module.exports.screen = function() {
     var screen = new UI.Window({
         fullscreen: true
@@ -11,7 +13,7 @@ module.exports.screen = function() {
     var bg = new UI.Rect({
         position: new V(0, 0),
         size: new V(144, 168),
-        backgroundColor: '#00aaff'
+        backgroundColor: lib.getWatchInfo().platform === 'aplite' ? '#000000' : '#00aaff'
     });
 
     var text = new UI.Text({

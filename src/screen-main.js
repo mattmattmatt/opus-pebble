@@ -5,6 +5,8 @@ var V = require('vector2');
 var UI = require('ui');
 var Settings = require('settings');
 
+var lib = require('./lib');
+
 var mainScreen;
 var volumeBar;
 var volumeBg;
@@ -54,7 +56,7 @@ module.exports.screen = function() {
         var bg = new UI.Rect({
             position: new V(0, 0),
             size: new V(144, 168),
-            backgroundColor: '#00aaff'
+            backgroundColor: lib.getWatchInfo().platform === 'aplite' ? '#000000' : '#00AAFF'
         });
 
         mainScreen.add(bg);
@@ -125,7 +127,7 @@ module.exports.setVolume = function(oldVolume, volume) {
         volumeBg = new UI.Rect({
             position: new V(0, 14),
             size: new V(144, 0),
-            backgroundColor: '#00aaff'
+            backgroundColor: lib.getWatchInfo().platform === 'aplite' ? '#000000' : '#00aaff'
         });
         
         volumeDesc = new UI.Text({
@@ -133,7 +135,7 @@ module.exports.setVolume = function(oldVolume, volume) {
             position: new V(20, maxVolInPixels + margin - 42 - 2 - 28),
             size: new V(74, 0),
             font: 'gothic-28',
-            color: '#00aaff',
+            color: lib.getWatchInfo().platform === 'aplite' ? '#000000' : '#00aaff',
             text: 'Volume'
         });
         
@@ -151,7 +153,7 @@ module.exports.setVolume = function(oldVolume, volume) {
             position: new V(20, maxVolInPixels + margin - 42 - 6),
             size: new V(74, 0),
             font: 'leco-42-numbers',
-            color: '#00aaff',
+            color: lib.getWatchInfo().platform === 'aplite' ? '#000000' : '#00aaff',
             text: volume
         });
         

@@ -4,6 +4,7 @@ var UI = require('ui');
 var Settings = require('settings');
 
 var mixpanel = require('./mixpanel');
+var lib = require('./lib');
 
 var screen;
 
@@ -29,10 +30,10 @@ module.exports.screen = function() {
     if (!screen) {
         screen = new UI.Menu({
             fullscreen: true,
-            backgroundColor: '#00aaff',
+            backgroundColor: lib.getWatchInfo().platform === 'aplite' ? '#000000' : '#00aaff',
             textColor: '#FFFFFF',
             highlightBackgroundColor: '#FFFFFF',
-            highlightTextColor: '#00aaff',
+            highlightTextColor: lib.getWatchInfo().platform === 'aplite' ? '#000000' : '#00aaff',
             sections: [{
                 title: 'Choose a Kodi host',
                 items: getHostsForMenu()

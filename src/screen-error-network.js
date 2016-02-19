@@ -4,6 +4,8 @@
 var UI = require('ui');
 var Settings = require('settings');
 
+var lib = require('./lib');
+
 var errorScreen;
 var killInterval;
 var killCallback = function() {};
@@ -42,7 +44,7 @@ module.exports.screen = function(error, killCb) {
         errorScreen = new UI.Card({
             fullscreen: true,
             scrollable: true,
-            backgroundColor: '#AA0000',
+            backgroundColor: lib.getWatchInfo().platform === 'aplite' ? '#000000' : '#AA0000',
             titleColor: '#ffffff',
             subtitleColor: '#ffffff',
             bodyColor: '#ffffff',

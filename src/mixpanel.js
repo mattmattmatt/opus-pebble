@@ -5,25 +5,26 @@ var ajax = require('ajax');
 var btoa = require('shims').btoa;
 
 var appinfo = require('../appinfo.json');
+var lib = require('./lib');
 
 var SHOULD_LOG = true;
 
 var MIXPANEL_TOKEN = '6229cfb42de97ef516b9da89c4f96ac1';
-
-function getWatchInfo() {
-    if (Pebble.getActiveWatchInfo) {
-        return Pebble.getActiveWatchInfo();
-    } else {
-        return {};
-    }
-}
 
 module.exports.track = function(event, properties) {
     properties = properties || {};
     properties.distinct_id = Pebble.getAccountToken();
     properties.token = MIXPANEL_TOKEN;
     properties.appVersion = appinfo.versionLabel;
-    properties.watchInfo = getWatchInfo();
+    properties.settingsHosts = Settings.option('hosts');
+    properties.settingsShowClock = Settings.option('showClock');
+    properties.settingsVibeOnLongPress = Settings.option('vibeOnLongPress');
+    properties.settingsPlayActionWhenStopped  = Settings.option('playActionWhenStopped');
+    properties.settingsUpdateUi  = Settings.option('updateUi');
+    properties.watchPlatform = lib.getWatchInfo().platform;
+    properties.watchModel = lib.getWatchInfo().model;
+    properties.watchFirmware = JSON.stringify(lib.getWatchInfo().firmware);
+    properties.watchLanguage = lib.getWatchInfo().language;
 
     var data = {
         event: event,
@@ -61,12 +62,10 @@ module.exports.trackAppOpened = function() {
     module.exports.engage({
         $set: {
             'App Version': appinfo.versionLabel,
-            'Watch Info': JSON.stringify(getWatchInfo())
+            'Watch Info': JSON.stringify(lib.getWatchInfo())
         }
     });
-    module.exports.track('App opened', {
-        settings: JSON.stringify(Settings.option())
-    });
+    module.exports.track('App opened');
 };
 
 module.exports.engage = function(properties) {
