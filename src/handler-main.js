@@ -64,10 +64,18 @@ function onNetworkSuccess() {
 
 function updateActionBar(field, value) {
     var actionDef = mainUiComponents.actionDef;
-    if (playState > 1) {
-        actionDef.select = 'images/pause.png';
-    } else {
-        actionDef.select = 'images/play.png';
+    if (menuMode === 'player') {
+        if (playState > 1) {
+            actionDef.select = 'images/pause.png';
+        } else {
+            actionDef.select = 'images/play.png';
+        }
+        actionDef.up = 'images/volume_up.png';
+        actionDef.down = 'images/volume_down.png';
+    } else if (menuMode === 'menu') {
+        actionDef.up = 'images/up.png';
+        actionDef.select = 'images/check.png';
+        actionDef.down = 'images/down.png';
     }
     if (field && value) {
         actionDef[field] = value;
@@ -115,6 +123,7 @@ function clickFunctionSelector() {
     if (Settings.option('vibeOnLongPress') !== false) {
         Vibe.vibrate('short');
     }
+    
     if (Settings.option('hosts') && Settings.option('hosts').length > 0) {
         require('./screen-func-selector').screen().show();
     } else {
@@ -135,6 +144,7 @@ function clickSkipNext() {
     if (Settings.option('vibeOnLongPress') !== false) {
         Vibe.vibrate('short');
     }
+    
     api.send('Player.GoTo', [playerid, 'next'], module.exports.updatePlayerState);
 
     mixpanel.track('Button pressed, Next', {
@@ -152,6 +162,7 @@ function clickSkipPrev() {
     if (Settings.option('vibeOnLongPress') !== false) {
         Vibe.vibrate('short');
     }
+    
     api.send('Player.GoTo', [playerid, 'previous'], module.exports.updatePlayerState);
 
     mixpanel.track('Button pressed, Previous', {
@@ -205,6 +216,16 @@ function clickMenuSelect() {
 }
 
 function clickMenuBack() {
+    updateActionBar('select', 'images/back.png');
+
+    setTimeout(function() {
+        updateActionBar('select', 'images/check.png');
+    }, 1000);
+
+    if (Settings.option('vibeOnLongPress') !== false) {
+        Vibe.vibrate('short');
+    }
+    
     api.send('Input.Back', []);
 
     mixpanel.track('Button pressed, Menu back', {
@@ -232,6 +253,16 @@ function clickMenuDown() {
 }
 
 function clickMenuLeft() {
+    updateActionBar('up', 'images/left.png');
+
+    setTimeout(function() {
+        updateActionBar('up', 'images/up.png');
+    }, 1000);
+
+    if (Settings.option('vibeOnLongPress') !== false) {
+        Vibe.vibrate('short');
+    }
+    
     api.send('Input.Left', []);
 
     mixpanel.track('Button pressed, Menu left', {
@@ -241,6 +272,16 @@ function clickMenuLeft() {
 }
 
 function clickMenuRight() {
+    updateActionBar('down', 'images/right.png');
+
+    setTimeout(function() {
+        updateActionBar('down', 'images/down.png');
+    }, 1000);
+
+    if (Settings.option('vibeOnLongPress') !== false) {
+        Vibe.vibrate('short');
+    }
+    
     api.send('Input.Right', []);
 
     mixpanel.track('Button pressed, Menu right', {
@@ -327,6 +368,7 @@ function setupEventListeners() {
 
 module.exports.setMenuMode = function(newMode) {
     menuMode = newMode;
+    updateActionBar();
 };
 
 module.exports.getPlayerType = function() {

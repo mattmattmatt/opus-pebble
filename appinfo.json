@@ -30,8 +30,13 @@
                 "type": "font"
             },
             {
-                "file": "images/ellipsis.png",
-                "name": "IMAGES_ELLIPSIS_PNG",
+                "file": "images/back.png",
+                "name": "IMAGES_BACK_PNG",
+                "type": "bitmap"
+            },
+            {
+                "file": "images/volume_up.png",
+                "name": "IMAGES_VOLUME_UP_PNG",
                 "type": "bitmap"
             },
             {
@@ -40,8 +45,13 @@
                 "type": "bitmap"
             },
             {
-                "file": "images/volume_up.png",
-                "name": "IMAGES_VOLUME_UP_PNG",
+                "file": "images/up.png",
+                "name": "IMAGES_UP_PNG",
+                "type": "bitmap"
+            },
+            {
+                "file": "images/right.png",
+                "name": "IMAGES_RIGHT_PNG",
                 "type": "bitmap"
             },
             {
@@ -65,8 +75,13 @@
                 "type": "bitmap"
             },
             {
-                "file": "images/up.png",
-                "name": "IMAGES_UP_PNG",
+                "file": "images/left.png",
+                "name": "IMAGES_LEFT_PNG",
+                "type": "bitmap"
+            },
+            {
+                "file": "images/ellipsis.png",
+                "name": "IMAGES_ELLIPSIS_PNG",
                 "type": "bitmap"
             },
             {
@@ -75,23 +90,13 @@
                 "type": "bitmap"
             },
             {
-                "file": "images/left.png",
-                "name": "IMAGES_LEFT_PNG",
-                "type": "bitmap"
-            },
-            {
-                "file": "images/right.png",
-                "name": "IMAGES_RIGHT_PNG",
+                "file": "images/cross.png",
+                "name": "IMAGES_CROSS_PNG",
                 "type": "bitmap"
             },
             {
                 "file": "images/check.png",
                 "name": "IMAGES_CHECK_PNG",
-                "type": "bitmap"
-            },
-            {
-                "file": "images/cross.png",
-                "name": "IMAGES_CROSS_PNG",
                 "type": "bitmap"
             }
         ]
