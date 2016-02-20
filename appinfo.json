@@ -63,6 +63,36 @@
                 "file": "images/next.png",
                 "name": "IMAGES_NEXT_PNG",
                 "type": "bitmap"
+            },
+            {
+                "file": "images/up.png",
+                "name": "IMAGES_UP_PNG",
+                "type": "bitmap"
+            },
+            {
+                "file": "images/down.png",
+                "name": "IMAGES_DOWN_PNG",
+                "type": "bitmap"
+            },
+            {
+                "file": "images/left.png",
+                "name": "IMAGES_LEFT_PNG",
+                "type": "bitmap"
+            },
+            {
+                "file": "images/right.png",
+                "name": "IMAGES_RIGHT_PNG",
+                "type": "bitmap"
+            },
+            {
+                "file": "images/check.png",
+                "name": "IMAGES_CHECK_PNG",
+                "type": "bitmap"
+            },
+            {
+                "file": "images/cross.png",
+                "name": "IMAGES_CROSS_PNG",
+                "type": "bitmap"
             }
         ]
     },
