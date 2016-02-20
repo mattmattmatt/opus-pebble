@@ -45,7 +45,7 @@ function showUpdateNotification(newestVersion, runningVersion, message) {
 
     if (!notificationScreen) {
         notificationScreen = new UI.Card({
-            fullscreen: false,
+            fullscreen: true,
             scrollable: true,
             backgroundColor: lib.getWatchInfo().platform === 'aplite' ? '#000000' : '#00AA55',
             titleColor: '#ffffff',

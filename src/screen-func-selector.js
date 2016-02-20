@@ -12,7 +12,7 @@ var selectorScreen;
 function getMenuItems() {
     return [
         {
-            title: 'Remote control'
+            title: 'Menu navigation'
         },
         {
             title: 'Host selector'
