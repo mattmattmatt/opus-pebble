@@ -7,6 +7,7 @@ var mainScreen = require('./screen-main').screen();
 var startupScreen = require('./screen-startup').screen();
 var hostScreen = require('./screen-host-selector').screen();
 var errorScreen = require('./screen-error-network').screen();
+var functionScreen = require('./screen-func-selector').screen();
 var UpdateNotificationScreen = require('./screen-update-notification');
 var mainHandler = require('./handler-main');
 
@@ -60,6 +61,7 @@ function showMainScreen() {
     var hosts = Settings.option('hosts') || [];
     
     errorScreen.hide();
+    functionScreen.hide();
     
     if (!hosts.length) {
         startupScreen.show();
@@ -104,6 +106,7 @@ function killApp() {
     hostScreen.hide();
     mainScreen.hide();
     errorScreen.hide();
+    functionScreen.hide();
 }
 
 function onNetworkError(error) {

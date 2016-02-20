@@ -50,6 +50,7 @@ module.exports.screen = function() {
             Settings.data('activeHostIndex', event.itemIndex);
             require('./handler-main').reset();
             require('./handler-main').updatePlayerState();
+            require('./screen-func-selector').screen().hide();
             screen.hide();
 
             mixpanel.track('Host Selector, Selected host', {
