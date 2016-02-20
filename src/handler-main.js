@@ -119,12 +119,10 @@ function clickFunctionSelector() {
     setTimeout(function() {
         updateActionBar();
     }, 1000);
-
-    if (Settings.option('vibeOnLongPress') !== false) {
-        Vibe.vibrate('short');
-    }
     
-    if (Settings.option('hosts') && Settings.option('hosts').length > 0) {
+    if (Settings.option('hosts') && Settings.option('hosts').length === 1) {
+        module.exports.setMenuMode('menu');
+    } else if (Settings.option('hosts') && Settings.option('hosts').length > 1) {
         require('./screen-func-selector').screen().show();
     } else {
         require('./screen-startup').screen().show();
@@ -141,10 +139,6 @@ function clickSkipNext() {
         updateActionBar('down', 'images/volume_down.png');
     }, 1000);
 
-    if (Settings.option('vibeOnLongPress') !== false) {
-        Vibe.vibrate('short');
-    }
-    
     api.send('Player.GoTo', [playerid, 'next'], module.exports.updatePlayerState);
 
     mixpanel.track('Button pressed, Next', {
@@ -159,10 +153,6 @@ function clickSkipPrev() {
         updateActionBar('up', 'images/volume_up.png');
     }, 1000);
 
-    if (Settings.option('vibeOnLongPress') !== false) {
-        Vibe.vibrate('short');
-    }
-    
     api.send('Player.GoTo', [playerid, 'previous'], module.exports.updatePlayerState);
 
     mixpanel.track('Button pressed, Previous', {
@@ -222,10 +212,6 @@ function clickMenuBack() {
         updateActionBar('select', 'images/check.png');
     }, 1000);
 
-    if (Settings.option('vibeOnLongPress') !== false) {
-        Vibe.vibrate('short');
-    }
-    
     api.send('Input.Back', []);
 
     mixpanel.track('Button pressed, Menu back', {
@@ -259,10 +245,6 @@ function clickMenuLeft() {
         updateActionBar('up', 'images/up.png');
     }, 1000);
 
-    if (Settings.option('vibeOnLongPress') !== false) {
-        Vibe.vibrate('short');
-    }
-    
     api.send('Input.Left', []);
 
     mixpanel.track('Button pressed, Menu left', {
@@ -278,10 +260,6 @@ function clickMenuRight() {
         updateActionBar('down', 'images/down.png');
     }, 1000);
 
-    if (Settings.option('vibeOnLongPress') !== false) {
-        Vibe.vibrate('short');
-    }
-    
     api.send('Input.Right', []);
 
     mixpanel.track('Button pressed, Menu right', {
@@ -300,6 +278,9 @@ function setupEventListeners() {
     });
 
     mainScreen.on('longClick', 'select', function(e) {
+        if (Settings.option('vibeOnLongPress') !== false) {
+            Vibe.vibrate('short');
+        }
         if (menuMode === 'player') {
             clickFunctionSelector();
         } else if (menuMode === 'menu') {
@@ -324,6 +305,9 @@ function setupEventListeners() {
     });
     
     mainScreen.on('longClick', 'up', function(e) {
+        if (Settings.option('vibeOnLongPress') !== false) {
+            Vibe.vibrate('short');
+        }
         if (menuMode === 'player') {
             clickSkipPrev();
         } else if (menuMode === 'menu') {
@@ -332,6 +316,9 @@ function setupEventListeners() {
     });
 
     mainScreen.on('longClick', 'down', function(e) {
+        if (Settings.option('vibeOnLongPress') !== false) {
+            Vibe.vibrate('short');
+        }
         if (menuMode === 'player') {
             clickSkipNext();
         } else if (menuMode === 'menu') {
