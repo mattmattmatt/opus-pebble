@@ -2,11 +2,13 @@
 
 var V = require('vector2');
 var UI = require('ui');
+var Settings = require('settings');
 
 var lib = require('./lib');
+var mixpanel = require('./mixpanel');
 
 module.exports.screen = function() {
-    var screen = new UI.Window({
+    var startupScreen = new UI.Window({
         fullscreen: true
     });
 
@@ -34,9 +36,26 @@ module.exports.screen = function() {
         text: '%H:%M'
     });
 
-    screen.add(bg);
-    screen.add(text);
-    screen.add(time);
+    startupScreen.add(bg);
+    startupScreen.add(text);
+    startupScreen.add(time);
+    
+    startupScreen.on('show', function() {
+        mixpanel.track('Startup screen viewed');
+    });
+    
+    startupScreen.on('hide', function() {
+        var windowStack = require('ui/windowstack');
+        var length = 0;
+        windowStack.each(function(wind, i) {
+            length++;
+        });
+        if (length === 0) {
+            mixpanel.track('App closed', {
+                lastScreen: 'startup'
+            });
+        }
+    });
 
-    return screen;
+    return startupScreen;
 };

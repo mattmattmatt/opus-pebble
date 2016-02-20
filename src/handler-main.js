@@ -257,5 +257,21 @@ module.exports.init = function(m, errorCallback) {
     });
 
     mainScreen.on('accelTap', module.exports.updatePlayerState);
+    
+    mainScreen.on('hide', function() {
+        var windowStack = require('ui/windowstack');
+        var length = 0;
+        windowStack.each(function(wind, i) {
+            length++;
+        });
+        if (length === 0) {
+            mixpanel.track('App closed', {
+                lastScreen: 'main',
+                volume: volume,
+                playState: playState,
+                playerType: playertype
+            });
+        }
+    });
 };
 

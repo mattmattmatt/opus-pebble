@@ -71,6 +71,9 @@ module.exports.screen = function() {
                 kodiIp: Settings.data('activeHost') && Settings.data('activeHost').address
             });
         });
+        screen.on('hide', function(event) {
+            mixpanel.track('Host Selector hidden');
+        });
     }
     return screen;
 };

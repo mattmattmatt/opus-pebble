@@ -5,6 +5,7 @@ var ajax = require('ajax');
 var UI = require('ui');
 
 var lib = require('./lib');
+var mixpanel = require('./mixpanel');
 
 var notificationScreen;
 
@@ -25,6 +26,16 @@ function getMessage(data, runningVersion) {
     return message;
 }
 
+function setupEventListeners() {
+    notificationScreen.on('show', function() {
+        mixpanel.track('Update notification viewed');
+    });
+    
+    notificationScreen.on('hide', function() {
+        mixpanel.track('Update notification hidden');
+    });
+}
+
 function showUpdateNotification(newestVersion, runningVersion, message) {
     var bodyString = 'New since your version ' + runningVersion + ':\n';
     bodyString += message || 'General bugfixes and stability improvements.\n';
@@ -43,6 +54,7 @@ function showUpdateNotification(newestVersion, runningVersion, message) {
             title: 'Update available 😃',
             body: bodyString
         });
+        setupEventListeners();
     } else {
         notificationScreen.body(bodyString);
     }
