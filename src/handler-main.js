@@ -297,6 +297,14 @@ function setupEventListeners() {
             clickMenuRight();
         }
     });
+    
+    mainScreen.on('click', 'back', function(event) {
+        if (menuMode === 'player') {
+            mainScreen.hide();
+        } else if (menuMode === 'menu') {
+            module.exports.setMenuMode('player');
+        }
+    });
 
     mainScreen.on('accelTap', module.exports.updatePlayerState);
 
