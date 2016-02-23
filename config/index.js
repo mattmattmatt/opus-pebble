@@ -67,10 +67,11 @@
         if (index !== undefined && config.hosts[index]) {
             $('#testresult-' + index).text('Sending ping to Kodi...');
             var ip = config.hosts[index].address;
+            var url = 'http://' + ip + '/jsonrpc?request={"jsonrpc":"2.0","method":"JSONRPC.Ping","id":' + Math.ceil(Math.random() * 10000) + '}';
             $.ajax({
                 cache: false,
                 dataType: 'jsonp',
-                url: 'http://' + ip + '/jsonrpc?request={"jsonrpc":"2.0","method":"JSONRPC.Ping","id":' + Math.ceil(Math.random() * 10000) + '}',
+                url: url,
                 timeout: 2000
             }).then(function(data) {
                 if (data && data.result === 'pong') {
@@ -79,19 +80,21 @@
                         host: config.hosts[index],
                     });
                 } else {
-                    $('#testresult-' + index).text('Connected to a server but didn\'t receive pong. ' + JSON.stringify(data));
+                    $('#testresult-' + index).text('Connected to a server but didn\'t receive pong.<br />' + JSON.stringify(data) + '<br />' + url);
                     mixpanel.track('Config, Test host failed without pong', {
                         host: config.hosts[index],
-                        data: data
+                        data: data,
+                        koduUrl: url
                     });
                 }
             }, function(error) {
-                $('#testresult-' + index).text('Couldn\'t connect to Kodi. ' + JSON.stringify(error));
+                $('#testresult-' + index).text('Couldn\'t connect to Kodi.<br />' + JSON.stringify(error) + '<br />' + url);
                 mixpanel.track('Config, Test host failed', {
                     host: config.hosts[index],
                     statusCode: error.status,
                     statusText: error.statusText,
-                    readyState: error.readyState
+                    readyState: error.readyState,
+                    koduUrl: url
                 });
             });
         }
