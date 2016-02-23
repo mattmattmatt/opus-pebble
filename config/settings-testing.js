@@ -13,7 +13,7 @@ function getStateFromUi() {
                 name: $('.js-host-name').get(index).value.trim(),
                 username: $('.js-host-username').get(index).value.trim(),
                 password: $('.js-host-password').get(index).value.trim()
-            })
+            });
         }
     });
     return settings;
@@ -42,7 +42,41 @@ function setUiFromState(config) {
 
     $('#host-container').empty();
     _.each(config.hosts, function(host, index) {
-        $('#host-container').append('<fieldset class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label"><input class="mdl-textfield__input js-host-address" type="text" '+ (index === 0 ? 'required="required" ' : ' ') + ' autocapitalize="off" autocorrect="off" id="addr-'+index+'" value="'+host.address+'"><label class="mdl-textfield__label" for="addr-'+index+'">Kodi IP Address and Port (e.g. 192.168.1.100:8080)</label></fieldset><fieldset class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label"><input class="mdl-textfield__input js-host-name" type="text" id="name-'+index+'" value="'+host.name+'"><label class="mdl-textfield__label" for="name-'+index+'">Host Name</label></fieldset><fieldset class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label"><input class="mdl-textfield__input js-host-username" type="text" id="username-'+index+'" value="'+host.username+'" autocapitalize="off" ><label class="mdl-textfield__label" for="username-'+index+'">Username (optional)</label></fieldset><fieldset class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label"><input class="mdl-textfield__input js-host-password" type="text" id="password-'+index+'" value="'+host.password+'" autocapitalize="off" autocorrect="off" autocomplete="off" ><label class="mdl-textfield__label" for="password-'+index+'">Password (optional)</label></fieldset><hr />');
+        var markup = '' +
+        '<h6 class="mdl-card__title-text">Host number ' + (index + 1) + '</h6>' +
+        '<fieldset class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">' +
+            '<input class="mdl-textfield__input js-host-address" type="text" '+ (index === 0 ? 'required="required" ' : ' ') + ' autocapitalize="off" autocorrect="off" id="addr-'+index+'" value="'+host.address+'">' +
+            '<label class="mdl-textfield__label" for="addr-'+index+'">' +
+                'Kodi IP Address and Port (e.g. 192.168.1.100:8080)' +
+            '</label>' +
+        '</fieldset>' +
+        '<fieldset class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">' +
+            '<input class="mdl-textfield__input js-host-name" type="text" id="name-'+index+'" value="'+host.name+'">' +
+            '<label class="mdl-textfield__label" for="name-'+index+'">' +
+                'Host Name' +
+            '</label>' +
+        '</fieldset>' +
+        '<fieldset class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">' +
+            '<input class="mdl-textfield__input js-host-username" type="text" id="username-'+index+'" value="'+host.username+'" autocapitalize="off" >' +
+            '<label class="mdl-textfield__label" for="username-'+index+'">' +
+                'Username (optional)' +
+            '</label>' +
+        '</fieldset>' +
+        '<fieldset class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">' +
+            '<input class="mdl-textfield__input js-host-password" type="text" id="password-'+index+'" value="'+host.password+'" autocapitalize="off" autocorrect="off" autocomplete="off" >' +
+            '<label class="mdl-textfield__label" for="password-'+index+'">' +
+                'Password (optional)' +
+            '</label>' +
+        '</fieldset>' +
+        '<a href="javascript:void(0);" id="test-' + index + '" class="js-test-host">Test connection to host number ' + (index + 1) + '</a>' +
+        '<p id="testresult-' + index + '"></p>' +
+        ( index > 0 ?
+        '<button id="delete-'+index+'" type="button" class="mdl-button mdl-js-button mdl-button--raised js-delete-host">' +
+            'Delete host'+
+        '</button>'
+        : '') +
+        '<hr />';
+        $('#host-container').append(markup);
     });
     componentHandler.upgradeElements($('#host-container').get(0));
 }

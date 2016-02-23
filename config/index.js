@@ -60,6 +60,43 @@
         }
     });
 
+    $(document.body).on('click', '.js-test-host', function(event) {
+        mixpanel.track('Config, Test host clicked');
+        var index = event.target.id.split('test-')[1];
+        var config = getStateFromUi();
+        if (index !== undefined && config.hosts[index]) {
+            $('#testresult-' + index).text('Sending ping to Kodi...');
+            var ip = config.hosts[index].address;
+            $.ajax({
+                cache: false,
+                dataType: 'jsonp',
+                url: 'http://' + ip + '/jsonrpc?request={"jsonrpc":"2.0","method":"JSONRPC.Ping","id":' + Math.ceil(Math.random() * 10000) + '}',
+                timeout: 2000
+            }).then(function(data) {
+                if (data && data.result === 'pong') {
+                    $('#testresult-' + index).text('Looks good! We received a pong!');
+                    mixpanel.track('Config, Test host successful', {
+                        host: config.hosts[index],
+                    });
+                } else {
+                    $('#testresult-' + index).text('Connected to a server but didn\'t receive pong. ' + JSON.stringify(data));
+                    mixpanel.track('Config, Test host failed without pong', {
+                        host: config.hosts[index],
+                        data: data
+                    });
+                }
+            }, function(error) {
+                $('#testresult-' + index).text('Couldn\'t connect to Kodi. ' + JSON.stringify(error));
+                mixpanel.track('Config, Test host failed', {
+                    host: config.hosts[index],
+                    statusCode: error.status,
+                    statusText: error.statusText,
+                    readyState: error.readyState
+                });
+            });
+        }
+    });
+
     document.getElementsByClassName('js-track-issues-link')[0].addEventListener('click', function (event) {
         mixpanel.track('Config, Issues link clicked');
     });
