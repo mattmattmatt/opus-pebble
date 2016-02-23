@@ -84,7 +84,7 @@
                     mixpanel.track('Config, Test host failed without pong', {
                         host: config.hosts[index],
                         data: data,
-                        koduUrl: url
+                        kodiPingUrl: url
                     });
                 }
             }, function(error) {
@@ -94,7 +94,7 @@
                     statusCode: error.status,
                     statusText: error.statusText,
                     readyState: error.readyState,
-                    koduUrl: url
+                    kodiPingUrl: url
                 });
             });
         }
