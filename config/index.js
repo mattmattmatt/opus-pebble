@@ -80,7 +80,10 @@
                         host: config.hosts[index],
                     });
                 } else {
-                    $('#testresult-' + index).html('Connected to a server but didn\'t receive pong.<br />' + JSON.stringify(data) + '<br />' + url);
+                    $('#testresult-' + index).html('Connected to a server but didn\'t receive pong.<br />' +
+                                                   JSON.stringify(data) +
+                                                   '<br />' +
+                                                   '<a href="' + url + '">Try opening the URL directly</a>');
                     mixpanel.track('Config, Test host failed without pong', {
                         host: config.hosts[index],
                         data: data,
@@ -88,7 +91,10 @@
                     });
                 }
             }, function(error) {
-                $('#testresult-' + index).html('Couldn\'t connect to Kodi.<br />' + JSON.stringify(error) + '<br />' + url);
+                $('#testresult-' + index).html('Couldn\'t connect to Kodi.<br />' +
+                                               JSON.stringify(error) +
+                                               '<br />' +
+                                               '<a href="' + url + '">Try opening the URL directly</a>');
                 mixpanel.track('Config, Test host failed', {
                     host: config.hosts[index],
                     statusCode: error.status,
