@@ -72,6 +72,14 @@ function updateActionBar(field, value) {
         }
         actionDef.up = 'images/volume_up.png';
         actionDef.down = 'images/volume_down.png';
+    } else if (menuMode === 'skipper') {
+        actionDef.up = 'images/fr.png';
+        if (playState > 0) {
+            actionDef.select = 'images/stop.png';
+        } else {
+            actionDef.select = 'images/play.png';
+        }
+        actionDef.down = 'images/ff.png';
     } else if (menuMode === 'menu') {
         actionDef.up = 'images/up.png';
         actionDef.select = 'images/check.png';
@@ -81,6 +89,34 @@ function updateActionBar(field, value) {
         actionDef[field] = value;
     }
     mainScreen.action(actionDef);
+}
+
+var clicks = 0;
+function handleClick(singleCallback, doubleCallback) {
+    clicks++;
+    if (clicks == 1) {
+        setTimeout(function() {
+            console.log('click handler ' + clicks);
+            if(clicks == 1) {
+                (singleCallback || function() {})();
+            } else {
+                (doubleCallback || function() {})();
+            }
+            clicks = 0;
+        }, 600);
+    }
+}
+
+function clickStop() {
+    api.send('Player.Stop', [playerid], module.exports.updatePlayerState);
+    
+    // make sure we update display after this stop action as Kodi player state sometimes updates a bit late
+    setTimeout(module.exports.updatePlayerState, 800);
+    setTimeout(module.exports.updatePlayerState, 1600);
+
+    mixpanel.track('Button pressed, Stop', {
+        playerType: playertype
+    });
 }
 
 function clickPlayPause() {
@@ -114,19 +150,25 @@ function clickPlayPause() {
 }
 
 function clickFunctionSelector() {
-    updateActionBar('select', 'images/ellipsis.png');
-
-    setTimeout(function() {
-        updateActionBar();
-    }, 1000);
-    
-    if (Settings.option('hosts') && Settings.option('hosts').length === 1) {
-        module.exports.setMenuMode('menu');
-    } else if (Settings.option('hosts') && Settings.option('hosts').length > 1) {
+    if (menuMode === 'menu' && Settings.option('hosts') && Settings.option('hosts').length > 1) {
         require('./screen-func-selector').screen().show();
     } else {
-        require('./screen-startup').screen().show();
-        mainScreen.hide();
+        switch (menuMode) {
+            default:
+            case 'player':
+                if (playState > 0) {
+                    module.exports.setMenuMode('skipper');                    
+                } else {
+                    module.exports.setMenuMode('menu');                    
+                }
+                break;
+            case 'skipper':
+                module.exports.setMenuMode('menu');
+                break;
+            case 'menu':
+                module.exports.setMenuMode('player');
+                break;
+        }
     }
 
     mixpanel.track('Button pressed, Function Selector');
@@ -159,6 +201,40 @@ function clickSkipPrev() {
         playerType: playertype
     });
 }
+
+function clickSkipBack() {
+    api.send('Input.ExecuteAction', {action: 'stepback'}, module.exports.updatePlayerState);
+
+    mixpanel.track('Button pressed, Skip back', {
+        playerType: playertype
+    });
+}
+
+function clickSkipAhead() {
+    api.send('Input.ExecuteAction', {action: 'stepforward'}, module.exports.updatePlayerState);
+
+    mixpanel.track('Button pressed, Skip ahead', {
+        playerType: playertype
+    });
+}
+
+
+function clickBigSkipBack() {
+    api.send('Input.ExecuteAction', {action: 'bigstepback'}, module.exports.updatePlayerState);
+
+    mixpanel.track('Button pressed, Skip back', {
+        playerType: playertype
+    });
+}
+
+function clickBigSkipAhead() {
+    api.send('Input.ExecuteAction', {action: 'bigstepforward'}, module.exports.updatePlayerState);
+
+    mixpanel.track('Button pressed, Skip ahead', {
+        playerType: playertype
+    });
+}
+
 
 function clickVolumeUp() {
     var oldVolume = volume;
@@ -272,8 +348,14 @@ function setupEventListeners() {
     mainScreen.on('click', 'select', function(e) {
         if (menuMode === 'player') {
             clickPlayPause();
+        } else if (menuMode === 'skipper') {
+            if (playState > 0) {
+                clickStop();
+            } else {
+                clickPlayPause();
+            }
         } else if (menuMode === 'menu') {
-            clickMenuSelect();
+            handleClick(clickMenuSelect, clickMenuBack);
         }
     });
 
@@ -281,16 +363,14 @@ function setupEventListeners() {
         if (Settings.option('vibeOnLongPress') !== false) {
             Vibe.vibrate('short');
         }
-        if (menuMode === 'player') {
-            clickFunctionSelector();
-        } else if (menuMode === 'menu') {
-            clickMenuBack();
-        }
+        clickFunctionSelector();
     });
 
     mainScreen.on('click', 'up', function(e) {
         if (menuMode === 'player') {
             clickVolumeUp();
+        } else if (menuMode === 'skipper') {
+            clickSkipBack();
         } else if (menuMode === 'menu') {
             clickMenuUp();
         }
@@ -299,6 +379,8 @@ function setupEventListeners() {
     mainScreen.on('click', 'down', function(e) {
         if (menuMode === 'player') {
             clickVolumeDown();
+        } else if (menuMode === 'skipper') {
+            clickSkipAhead();
         } else if (menuMode === 'menu') {
             clickMenuDown();
         }
@@ -310,6 +392,8 @@ function setupEventListeners() {
         }
         if (menuMode === 'player') {
             clickSkipPrev();
+        } else if (menuMode === 'skipper') {
+            clickBigSkipBack();
         } else if (menuMode === 'menu') {
             clickMenuLeft();
         }
@@ -321,6 +405,8 @@ function setupEventListeners() {
         }
         if (menuMode === 'player') {
             clickSkipNext();
+        } else if (menuMode === 'skipper') {
+            clickBigSkipAhead();
         } else if (menuMode === 'menu') {
             clickMenuRight();
         }
@@ -329,6 +415,8 @@ function setupEventListeners() {
     mainScreen.on('click', 'back', function(event) {
         if (menuMode === 'player') {
             mainScreen.hide();
+        } else if (menuMode === 'skipper') {
+            module.exports.setMenuMode('player');
         } else if (menuMode === 'menu') {
             module.exports.setMenuMode('player');
         }
@@ -356,6 +444,13 @@ function setupEventListeners() {
 module.exports.setMenuMode = function(newMode) {
     menuMode = newMode;
     updateActionBar();
+    
+    mixpanel.track('Set menu mode', {
+        volume: volume,
+        playState: playState,
+        playerType: playertype,
+        menuMode: menuMode
+    });
 };
 
 module.exports.getPlayerType = function() {
@@ -391,9 +486,10 @@ module.exports.updatePlayerState = function() {
                 api.send('Player.GetItem', {'properties': ['title', 'album', 'artist', 'duration', 'runtime', 'showtitle'], 'playerid': playerid}, function(data) {
                     var playingItem = data.result.item;
                     if (playertype === 'audio') {
-                        updateText(playingItem.title, playingItem.artist[0].toUpperCase() + '\n' + playingItem.album);
+                        var artist = playingItem && playingItem.artist && playingItem.artist[0] || '';
+                        updateText(playingItem && playingItem.title || '', artist.toUpperCase() + '\n' + (playingItem && playingItem.album || ''));
                     } else if (playertype === 'video') {
-                        updateText(playingItem.title, playingItem.showtitle || '');
+                        updateText(playingItem.title || '', playingItem.showtitle || '');
                     }
                 });
             } else {

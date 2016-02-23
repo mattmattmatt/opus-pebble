@@ -30,6 +30,26 @@
                 "type": "font"
             },
             {
+                "file": "images/mic.png",
+                "name": "IMAGES_MIC_PNG",
+                "type": "bitmap"
+            },
+            {
+                "file": "images/fr.png",
+                "name": "IMAGES_FR_PNG",
+                "type": "bitmap"
+            },
+            {
+                "file": "images/stop.png",
+                "name": "IMAGES_STOP_PNG",
+                "type": "bitmap"
+            },
+            {
+                "file": "images/ff.png",
+                "name": "IMAGES_FF_PNG",
+                "type": "bitmap"
+            },
+            {
                 "file": "images/back.png",
                 "name": "IMAGES_BACK_PNG",
                 "type": "bitmap"
@@ -109,7 +129,7 @@
     ],
     "uuid": "63309aa8-882a-473f-9b69-e845c7e04d05",
     "versionCode": 1,
-    "versionLabel": "2.1",
+    "versionLabel": "2.2",
     "watchapp": {
         "hiddenApp": false,
         "watchface": false

@@ -12,10 +12,16 @@ var selectorScreen;
 function getMenuItems() {
     return [
         {
-            title: 'Menu navigation'
+            title: 'Host Selection'
         },
         {
-            title: 'Host selector'
+            title: 'Play, Pause & Volume'
+        },
+        {
+            title: 'Skip & Stop'
+        },
+        {
+            title: 'Menu Navigation'
         }
     ];
 }
@@ -31,11 +37,19 @@ function setupEventListeners() {
         switch (event.itemIndex) {
             default:
             case 0:
-                require('./handler-main').setMenuMode('menu');
-                require('./screen-func-selector').screen().hide();
+                require('./screen-host-selector').screen().show();
                 break;
             case 1:
-                require('./screen-host-selector').screen().show();
+                require('./handler-main').setMenuMode('player');
+                require('./screen-func-selector').screen().hide();
+                break;
+            case 2:
+                require('./handler-main').setMenuMode('skipper');
+                require('./screen-func-selector').screen().hide();
+                break;
+            case 3:
+                require('./handler-main').setMenuMode('menu');
+                require('./screen-func-selector').screen().hide();
                 break;
         }
         
