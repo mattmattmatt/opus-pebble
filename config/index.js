@@ -67,16 +67,13 @@
         if (index !== undefined && config.hosts[index]) {
             $('#testresult-' + index).text('Sending ping to Kodi...');
             var ip = config.hosts[index].address;
-            var url = 'http://' + ip + '/jsonrpc';
+            var url = 'http://' + ip + '/jsonrpc?request=' +encodeURIComponent('{"jsonrpc":"2.0","method":"JSONRPC.Ping","id":' + Math.ceil(Math.random() * 10000) + '}');
             $.ajax({
                 method: 'GET',
                 cache: false,
                 dataType: 'jsonp',
                 url: url,
-                timeout: 2000,
-                data: {
-                    request: '{"jsonrpc":"2.0","method":"JSONRPC.Ping","id":' + Math.ceil(Math.random() * 10000) + '}'
-                }
+                timeout: 2000
             }).then(function(data) {
                 if (data && data.result === 'pong') {
                     $('#testresult-' + index).text('Looks good! We received a pong!');
@@ -84,11 +81,11 @@
                         host: config.hosts[index],
                     });
                 } else {
-                    $('#testresult-' + index).html('Connected to a server but didn\'t receive pong.<br /><code>' +
-                                                   JSON.stringify(data) +
-                                                   '</code><br />' +
+                    $('#testresult-' + index).html('Connected to a server but didn\'t receive pong.<br />' +
                                                    '<a href="' + url + '">Try opening the URL directly.</a> ' +
-                                                   'If you see a "pong", your connection should work fine.'
+                                                   'If you see a "pong", your connection should work fine.<br /><code>' +
+                                                   JSON.stringify(data, null, ' ') +
+                                                   '</code>'
                                                   );
                     mixpanel.track('Config, Test host failed without pong', {
                         host: config.hosts[index],
@@ -97,11 +94,11 @@
                     });
                 }
             }, function(error) {
-                $('#testresult-' + index).html('Couldn\'t connect to Kodi.<br /><code>' +
-                                               JSON.stringify(error) +
-                                               '</code><br />' +
+                $('#testresult-' + index).html('Couldn\'t connect to Kodi.<br />' +
                                                '<a href="' + url + '">Try opening the URL directly.</a> ' +
-                                               'If you see a "pong", your connection should work fine.'
+                                               'If you see a "pong", your connection should work fine.<br /><code>' +
+                                               JSON.stringify(error, null, ' ') +
+                                               '</code>'
                                               );
                 mixpanel.track('Config, Test host failed', {
                     host: config.hosts[index],
