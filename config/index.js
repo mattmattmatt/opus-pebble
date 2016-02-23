@@ -67,12 +67,16 @@
         if (index !== undefined && config.hosts[index]) {
             $('#testresult-' + index).text('Sending ping to Kodi...');
             var ip = config.hosts[index].address;
-            var url = 'http://' + ip + '/jsonrpc?request=' +encodeURIComponent('{"jsonrpc":"2.0","method":"JSONRPC.Ping","id":' + Math.ceil(Math.random() * 10000) + '}');
+            var url = 'http://' + ip + '/jsonrpc';
             $.ajax({
+                method: 'GET',
                 cache: false,
                 dataType: 'jsonp',
                 url: url,
-                timeout: 2000
+                timeout: 2000,
+                data: {
+                    request: '{"jsonrpc":"2.0","method":"JSONRPC.Ping","id":' + Math.ceil(Math.random() * 10000) + '}'
+                }
             }).then(function(data) {
                 if (data && data.result === 'pong') {
                     $('#testresult-' + index).text('Looks good! We received a pong!');
@@ -80,10 +84,12 @@
                         host: config.hosts[index],
                     });
                 } else {
-                    $('#testresult-' + index).html('Connected to a server but didn\'t receive pong.<br />' +
+                    $('#testresult-' + index).html('Connected to a server but didn\'t receive pong.<br /><code>' +
                                                    JSON.stringify(data) +
-                                                   '<br />' +
-                                                   '<a href="' + url + '">Try opening the URL directly</a>');
+                                                   '</code><br />' +
+                                                   '<a href="' + url + '">Try opening the URL directly.</a> ' +
+                                                   'If you see a "pong", your connection should work fine.'
+                                                  );
                     mixpanel.track('Config, Test host failed without pong', {
                         host: config.hosts[index],
                         data: data,
@@ -91,10 +97,12 @@
                     });
                 }
             }, function(error) {
-                $('#testresult-' + index).html('Couldn\'t connect to Kodi.<br />' +
+                $('#testresult-' + index).html('Couldn\'t connect to Kodi.<br /><code>' +
                                                JSON.stringify(error) +
-                                               '<br />' +
-                                               '<a href="' + url + '">Try opening the URL directly</a>');
+                                               '</code><br />' +
+                                               '<a href="' + url + '">Try opening the URL directly.</a> ' +
+                                               'If you see a "pong", your connection should work fine.'
+                                              );
                 mixpanel.track('Config, Test host failed', {
                     host: config.hosts[index],
                     statusCode: error.status,
