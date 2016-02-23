@@ -51,6 +51,15 @@
         setUiFromState(config);
     });
 
+    $(document.body).on('click', '.js-delete-host', function(event) {
+        var index = event.target.id.split('delete-')[1];
+        if (index) {
+            var config = getStateFromUi();
+            config.hosts.splice(index, 1);
+            setUiFromState(config);
+        }
+    });
+
     document.getElementsByClassName('js-track-issues-link')[0].addEventListener('click', function (event) {
         mixpanel.track('Config, Issues link clicked');
     });
