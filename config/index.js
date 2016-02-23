@@ -67,7 +67,7 @@
         if (index !== undefined && config.hosts[index]) {
             $('#testresult-' + index).text('Sending ping to Kodi...');
             var ip = config.hosts[index].address;
-            var url = 'http://' + ip + '/jsonrpc?request={"jsonrpc":"2.0","method":"JSONRPC.Ping","id":' + Math.ceil(Math.random() * 10000) + '}';
+            var url = 'http://' + ip + '/jsonrpc?request=' +encodeURIComponent('{"jsonrpc":"2.0","method":"JSONRPC.Ping","id":' + Math.ceil(Math.random() * 10000) + '}');
             $.ajax({
                 cache: false,
                 dataType: 'jsonp',
