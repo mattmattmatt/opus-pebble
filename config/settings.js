@@ -68,8 +68,8 @@ function setUiFromState(config) {
                 'Password (optional)' +
             '</label>' +
         '</fieldset>' +
-        '<a href="javascript:void(0);" id="test-' + index + '" class="js-test-host">Test connection to host number ' + (index + 1) + '</a>' +
-        '<p id="testresult-' + index + '"></p>' +
+//        '<a href="javascript:void(0);" id="test-' + index + '" class="js-test-host">Test connection to host number ' + (index + 1) + '</a>' +
+//        '<p id="testresult-' + index + '"></p>' +
         ( index > 0 ?
         '<button id="delete-'+index+'" type="button" class="mdl-button mdl-js-button mdl-button--raised js-delete-host">' +
             'Delete this host' +
