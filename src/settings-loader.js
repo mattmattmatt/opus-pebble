@@ -5,7 +5,7 @@ var Settings = require('settings');
 module.exports.init = function(onSettingsUpdated) {
     Settings.config(
         {
-            url: 'https://mattmattmatt.github.io/opus-pebble/config.html?' + Math.ceil(Math.random()*100000)
+            url: 'https://mattmattmatt.github.io/opus-pebble/config-testing.html?' + Math.ceil(Math.random()*100000)
         },
         function beforeOpen(e) {
         },
@@ -15,3 +15,4 @@ module.exports.init = function(onSettingsUpdated) {
         }
     );
 };
+

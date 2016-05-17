@@ -24,10 +24,21 @@ module.exports.send = function(method, params, callback, errorCallback) {
         "params": params,
         "id": Math.ceil(Math.random() * 10000)
     };
-
-    var authPart = (kodiHost.username && kodiHost.password) ? kodiHost.username + ':' + kodiHost.password + '@' : '';
     
-    if (SHOULD_LOG) console.log('Sending ' + (authPart ? 'with auth ' + kodiHost.username : 'without auth') + ': ' + JSON.stringify(data, null, ''));
+    // Now comes the hacky party that works around a bug in Android webview URIdecoding strings twice
+    var un;
+    var pw;
+    try {
+        un = decodeURIComponent(kodiHost.username);
+        pw = decodeURIComponent(kodiHost.password);
+    } catch(e) {
+        un = kodiHost.username;
+        pw = kodiHost.password;
+    }
+
+    var authPart = (un && pw) ? encodeURIComponent(un) + ':' + encodeURIComponent(pw) + '@' : '';
+    
+    if (SHOULD_LOG) console.log('Sending ' + (authPart ? 'with auth ' + un + ':' + pw : 'without auth') + ': ' + JSON.stringify(data, null, ''));
 
     ajax(
         {
