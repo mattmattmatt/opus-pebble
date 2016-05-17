@@ -11,8 +11,8 @@ function getStateFromUi() {
             settings.hosts.push({
                 address: input.value.trim(),
                 name: $('.js-host-name').get(index).value.trim(),
-                username: $('.js-host-username').get(index).value.trim(),
-                password: $('.js-host-password').get(index).value.trim()
+                username: encodeURIComponent($('.js-host-username').get(index).value.trim()),
+                password: encodeURIComponent($('.js-host-password').get(index).value.trim())
             });
         }
     });
