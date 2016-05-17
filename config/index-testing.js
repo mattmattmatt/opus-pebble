@@ -19,7 +19,7 @@
 
     function saveSettings() {
         var settings = getStateFromUi();
-
+        console.log('Saving...', settings, encodeURIComponent(JSON.stringify(settings)));
         log('Saved.<br />' + JSON.stringify(settings) + '<br/> &nbsp; ' + encodeURIComponent(JSON.stringify(settings)) + ' &nbsp;<br/>&nbsp; ');
 
         mixpanel.track('Config saved', settings);
